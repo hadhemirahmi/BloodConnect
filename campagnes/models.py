@@ -1,7 +1,7 @@
 from django.db import models
 
 class Campagne(models.Model):
-    hopital = models.ForeignKey('accounts.Hopital', on_delete=models.CASCADE, related_name='campagnes')
+    hopital = models.ForeignKey('comptes.Hopital', on_delete=models.CASCADE, related_name='campagnes')
     nom = models.CharField(max_length=200)
     date = models.DateField()
     lieu = models.CharField(max_length=255)
@@ -14,7 +14,7 @@ class Campagne(models.Model):
 
 class Inscription(models.Model):
     campagne = models.ForeignKey(Campagne, on_delete=models.CASCADE, related_name='inscriptions')
-    donneur = models.ForeignKey('accounts.Donneur', on_delete=models.CASCADE)
+    donneur = models.ForeignKey('comptes.Donneur', on_delete=models.CASCADE)
     creneau_horaire = models.CharField(max_length=50)
     date_inscription = models.DateTimeField(auto_now_add=True)
     present = models.BooleanField(default=False)

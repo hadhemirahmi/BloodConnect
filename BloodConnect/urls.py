@@ -19,15 +19,15 @@ from django.urls import path
 from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
-from .views import accueil
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
+    path('comptes/', include('comptes.urls')),
     path('demandes/', include('demandes.urls')),
     path('dons/', include('dons.urls')),
     path('campagnes/', include('campagnes.urls')),
-    path('', accueil, name='accueil')
+    path('core/', include('core.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

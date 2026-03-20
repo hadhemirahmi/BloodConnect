@@ -2,7 +2,7 @@ from django.db import models
 from core.models import GROUPE_SANGUIN_CHOICES, STATUT_DEMANDE_CHOICES, STATUT_REPONSE_CHOICES
 
 class DemandeUrgente(models.Model):
-    hopital = models.ForeignKey('accounts.Hopital', on_delete=models.CASCADE, related_name='demandes')
+    hopital = models.ForeignKey('comptes.Hopital', on_delete=models.CASCADE, related_name='demandes')
     groupe_sanguin = models.CharField(max_length=3, choices=GROUPE_SANGUIN_CHOICES)
     quantite = models.PositiveIntegerField()
     delai = models.DateTimeField()
@@ -15,7 +15,7 @@ class DemandeUrgente(models.Model):
 
 class ReponseAppel(models.Model):
     demande = models.ForeignKey(DemandeUrgente, on_delete=models.CASCADE, related_name='reponses')
-    donneur = models.ForeignKey('accounts.Donneur', on_delete=models.CASCADE)
+    donneur = models.ForeignKey('comptes.Donneur', on_delete=models.CASCADE)
     date_reponse = models.DateTimeField(auto_now_add=True)
     statut = models.CharField(max_length=20, choices=STATUT_REPONSE_CHOICES, default='en_attente')
 
