@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import ReponseAppel
+admin.site.register(ReponseAppel)
+from .models import DemandeUrgente
+admin.site.register(DemandeUrgente)
