@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+        body {
+        margin: 0;
+        background-image: url("{% static 'images/sa.jpg' %}");
+        background-size: cover;       /* couvre toute la page */
+        background-position: center;  /* centre l’image */
+        background-repeat: no-repeat; /* pas de répétition */
+    }
+    body {
+        margin: 0;
+        background-color: white; /* fond blanc */
+        font-family: Arial, sans-serif;
+    }
+
+    /* zone centrale */
+    .main-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 80px);
+    }
+
+    /* boîte */
+.box {
+    text-align: center;
+    padding: 40px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+    transform: translateY(-240px); /* remonte légèrement */
+}
+
+    h2 {
+        margin-bottom: 20px;
+        color: black; /* titre noir */
+    }
+
+    .btn-red {
+        background-color: red;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn-red:hover {
+        background-color: darkred;
+    }
+</style>
+</head>
+<body>
+<!-- Navbar rouge -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+  <div class="container">
+    
+    <!-- Logo + texte -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="/static/images/blood.jpg" alt="Logo" 
+           width="40" height="40" 
+           class="rounded-circle me-2">
+      BloodConnect
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/demandes/">Demandes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/dons/">Dons</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/campagnes/">Campagnes</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+    <div class="box">
+        <h2>Ajouter une demande urgente</h2>
+
+        <a href="{% url 'ajouter_demandes' %}">
+            <button class="btn-red">Ajouter une demande</button>
+        </a>
+    </div>
+</div>
+</body>
+</html>
