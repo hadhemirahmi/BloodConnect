@@ -19,6 +19,7 @@ from django.urls import path
 from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
+<<<<<<< HEAD
 from django.urls import path
 from . import views
 
@@ -31,6 +32,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Apps du projet
+=======
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+>>>>>>> 6db3816a27896ce06d24296326c1bccc933beeb7
     path('comptes/', include('comptes.urls')),
     path('demandes/', include('demandes.urls')),
     path('dons/', include('dons.urls')),
