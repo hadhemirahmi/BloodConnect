@@ -10,10 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-<<<<<<< HEAD
-import os
-=======
->>>>>>> 6db3816a27896ce06d24296326c1bccc933beeb7
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -64,11 +61,7 @@ ROOT_URLCONF = 'BloodConnect.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-<<<<<<< HEAD
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
-=======
-        'DIRS': [],
->>>>>>> 6db3816a27896ce06d24296326c1bccc933beeb7
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,7 +120,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-<<<<<<< HEAD
+
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
@@ -136,10 +129,4 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-=======
 
-STATIC_URL = 'static/'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
->>>>>>> 6db3816a27896ce06d24296326c1bccc933beeb7
