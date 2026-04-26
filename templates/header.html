@@ -6,15 +6,25 @@
             </div>
             
             <div class="d-none d-lg-flex align-items-center">
-                <a href="/" class="nav-link">Find Blood</a>
-                <a href="/dons/" class="nav-link">Donor Portal</a>
-                <a href="/hopitaux/" class="nav-link">Hospital Portal</a>
-                <a href="/about/" class="nav-link active">About Us</a>
+                <a href="{% url 'accueil' %}" class="nav-link">Accueil</a>
+                {% if user.is_authenticated %}
+                    {% if user.role == 'donneur' %}
+                        <a href="{% url 'dashboard_donneur' %}" class="nav-link">Mon Portail Donneur</a>
+                    {% elif user.role == 'hopital' %}
+                        <a href="{% url 'dashboard_hopital' %}" class="nav-link">Portail Hospitalier</a>
+                    {% endif %}
+                {% endif %}
+                <a href="{% url 'about' %}" class="nav-link">À Propos</a>
             </div>
 
             <div class="d-flex gap-3">
-                            <a href="{% url 'login' %}" class="btn btn-primary-red">Login</a>
-                        <a href="/register/" class="btn btn-primary-red">Register</a>
+                {% if user.is_authenticated %}
+                    <span class="navbar-text me-2 small fw-bold">Bonjour, {{ user.username }}</span>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Déconnexion</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary-red">Connexion</a>
+                    <a href="{% url 'register' %}" class="btn btn-outline-dark">Inscription</a>
+                {% endif %}
             </div>
         </nav>
     </header>

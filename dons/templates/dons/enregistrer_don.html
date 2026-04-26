@@ -1,0 +1,39 @@
+{% load static %}
+{% load django_bootstrap5 %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Enregistrer un Don | BloodConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body { background: #F8FAFC; }
+        .card { border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body class="d-flex align-items-center min-vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card p-4">
+                    <div class="text-center mb-4">
+                        <div class="mb-3 text-danger fs-1"><i class="fas fa-heartbeat"></i></div>
+                        <h4 class="fw-bold">Enregistrer un don</h4>
+                        <p class="text-muted small">Indiquez les détails de votre dernier don effectué</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-danger rounded-pill py-2 fw-bold">Valider l'enregistrement</button>
+                            <a href="{% url 'dashboard_donneur' %}" class="btn btn-link text-muted small text-decoration-none">Annuler</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

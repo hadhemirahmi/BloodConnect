@@ -24,6 +24,7 @@ urlpatterns = [
     path("comptes/", include("comptes.urls")),
     path("dons/", include("dons.urls")),
     path("demandes/", include("demandes.urls")),
+    path("campagnes/", include("campagnes.urls")),
 
     path("", views.accueil, name="accueil"),
     path("about/", views.about, name="about"),

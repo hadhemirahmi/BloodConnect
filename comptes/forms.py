@@ -55,6 +55,27 @@ class DonneurRegistrationForm(forms.Form):
             ville=data['ville']
         )
         return user
+class DonneurUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Donneur
+        fields = ['groupe_sanguin', 'sexe', 'date_naissance', 'ville']
+        widgets = {
+            'date_naissance': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'groupe_sanguin': forms.Select(attrs={'class': 'form-control'}),
+            'sexe': forms.Select(attrs={'class': 'form-control'}),
+            'ville': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class HopitalUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Hopital
+        fields = ['nom', 'adresse', 'ville', 'agrement']
+        widgets = {
+            'nom': forms.TextInput(attrs={'class': 'form-control'}),
+            'adresse': forms.TextInput(attrs={'class': 'form-control'}),
+            'ville': forms.TextInput(attrs={'class': 'form-control'}),
+            'agrement': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 class HopitalRegistrationForm(forms.Form):
   

@@ -1,103 +1,191 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Donneur — BloodConnect</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <style>
-    body { background: #F8F9FA; font-family: 'Inter', sans-serif; }
-    .sidebar { width: 280px; height: 100vh; position: fixed; background: white; border-right: 1px solid #eee; }
-    .main-content { margin-left: 280px; padding: 40px; }
-    .card { border: none; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-    .stat-card { background: linear-gradient(135deg, #DC2626, #991B1B); color: white; }
-    .nav-link { color: #4b5563; padding: 12px 20px; border-radius: 10px; margin: 4px 15px; transition: 0.3s; }
-    .nav-link:hover, .nav-link.active { background: #fee2e2; color: #DC2626; }
-    .logo-box { padding: 30px 20px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Donneur | BloodConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #DC2626;
+            --secondary: #FEE2E2;
+            --dark: #1E293B;
+            --accent: #FCA5A5;
+        }
+        body { background: #F8FAFC; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
+        .sidebar { background: white; border-right: 1px solid #E2E8F0; min-height: 100vh; padding: 2rem 1rem; }
+        .nav-link { color: #64748B; border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 0.5rem; transition: 0.3s; font-weight: 500; }
+        .nav-link:hover, .nav-link.active { background: var(--secondary); color: var(--primary); }
+        .nav-link i { margin-right: 0.8rem; }
+        .dashboard-content { padding: 2rem; }
+        .stat-card { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem; }
+        .badge-eligibility { background: #DCFCE7; color: #166534; padding: 0.5rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
+        .badge-waiting { background: #FEF9C3; color: #854D0E; padding: 0.5rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
+        .urgent-call { background: white; border-left: 4px solid var(--primary); border-radius: 15px; margin-bottom: 1rem; transition: 0.3s; }
+        .urgent-call:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); sticky-top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+    </style>
 </head>
 <body>
+    {% include 'navbar.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 sidebar d-none d-lg-block">
+                <div class="d-flex align-items-center gap-2 mb-5 px-3">
+                    <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-heart text-white small"></i>
+                    </div>
+                    <span class="fw-bold fs-5">BloodConnect</span>
+                </div>
+                <nav class="nav flex-column">
+                    <a href="{% url 'dashboard_donneur' %}" class="nav-link active"><i class="fas fa-th-large"></i> Dashboard</a>
+                    <a href="{% url 'mes_campagnes' %}" class="nav-link"><i class="fas fa-calendar-alt"></i> Mes Campagnes</a>
+                    <a href="{% url 'enregistrer_don' %}" class="nav-link"><i class="fas fa-plus-circle"></i> Enregistrer Don</a>
+                    <a href="{% url 'profile' %}" class="nav-link"><i class="fas fa-user-edit"></i> Mon Profil</a>
+                    <hr class="my-4 text-muted">
+                    <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                </nav>
+            </div>
 
-  <!-- Sidebar -->
-  <div class="sidebar d-none d-lg-block">
-    <div class="logo-box">
-      <h4 class="fw-bold m-0">Blood<span class="text-danger">Connect</span></h4>
-    </div>
-    <nav class="mt-2">
-      <a href="#" class="nav-link active"><i class="bi bi-grid-1x2-fill me-2"></i> Dashboard</a>
-      <a href="#" class="nav-link"><i class="bi bi-heart-pulse me-2"></i> Mes Dons</a>
-      <a href="#" class="nav-link"><i class="bi bi-search me-2"></i> Chercher une Campagne</a>
-      <a href="#" class="nav-link"><i class="bi bi-person me-2"></i> Profil</a>
-      <hr class="mx-3">
-      <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="bi bi-box-arrow-left me-2"></i> Déconnexion</a>
-    </nav>
-  </div>
+            <!-- Main Content -->
+            <div class="col-lg-10 p-0">
+                <div class="glass-header d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold m-0">Bienvenue, {{ request.user.username }} !</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="text-muted small"><i class="fas fa-map-marker-alt"></i> {{ donneur.ville }}</span>
+                        <div class="dropdown">
+                            <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DC2626&color=fff" class="rounded-circle" width="40" alt="Avatar">
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-      <div>
-        <h2 class="fw-bold">Bienvenue, {{ user.first_name }} !</h2>
-        <p class="text-muted">Merci de contribuer à sauver des vies.</p>
-      </div>
-      <div class="badge bg-danger p-2 fs-6 rounded-pill">
-        Groupe: {{ donneur.groupe_sanguin }}
-      </div>
-    </div>
+                <div class="dashboard-content">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
-    <!-- Stats -->
-    <div class="row g-4 mb-5">
-      <div class="col-md-4">
-        <div class="card stat-card p-4">
-          <div class="small opacity-75">Statut d'éligibilité</div>
-          <div class="fs-3 fw-bold mt-2">
-            {% if donneur.est_eligble %}Éligible{% else %}En attente{% endif %}
-          </div>
-          <div class="mt-2 small">{% if donneur.est_eligble %}Vous pouvez donner aujourd'hui !{% else %}Prochain don : {{ donneur.prochaine_date_don }}{% endif %}</div>
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: #E0F2FE; color: #0369A1;">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <span class="text-muted small fw-medium">Groupe Sanguin</span>
+                                <h3 class="fw-bold mt-1">{{ donneur.groupe_sanguin }}</h3>
+                                <p class="text-muted small mb-0">Donneur Univerel (si O-)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: #FFF7ED; color: #9A3412;">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <span class="text-muted small fw-medium">Dernier Don</span>
+                                <h3 class="fw-bold mt-1">{% if donneur.derniere_don %}{{ donneur.derniere_don|date:"d M Y" }}{% else %}Jamais{% endif %}</h3>
+                                <p class="text-muted small mb-0">{{ donneur.dons.count }} dons effectués</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: #F0FDF4; color: #166534;">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <span class="text-muted small fw-medium">Éligibilité</span>
+                                <h3 class="fw-bold mt-1">
+                                    {% if donneur.est_eligble %}
+                                        <span class="text-success">Disponible</span>
+                                    {% else %}
+                                        {{ donneur.prochaine_date_don|date:"d M Y" }}
+                                    {% endif %}
+                                </h3>
+                                <div>
+                                    {% if donneur.est_eligble %}
+                                        <span class="badge-eligibility">Vous pouvez donner aujourd'hui !</span>
+                                    {% else %}
+                                        <span class="badge-waiting">En attente de récupération</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="fw-bold m-0">Appels Urgents Compatibles</h5>
+                                <a href="{% url 'compatible_calls' %}" class="text-danger small text-decoration-none fw-bold">Voir tout</a>
+                            </div>
+                            {% if demandes_compatibles %}
+                                {% for demande in demandes_compatibles %}
+                                    <div class="urgent-call p-3 card shadow-sm">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="fw-bold mb-1">{{ demande.hopital.nom }} <span class="badge bg-danger ms-2">{{ demande.groupe_sanguin }}</span></h6>
+                                                <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt"></i> {{ demande.hopital.ville }} | <i class="fas fa-clock"></i> Deadline: {{ demande.delai|date:"d M, H:i" }}</p>
+                                                <p class="small mb-2 text-dark">{{ demande.description|truncatechars:100 }}</p>
+                                            </div>
+                                            <a href="{% url 'repondre_appel' demande.pk %}" class="btn btn-primary-red btn-sm rounded-pill px-3">Répondre</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center py-5 bg-white rounded-4 border">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" class="mb-3 opacity-25">
+                                    <p class="text-muted">Aucun appel urgent pour votre groupe sanguin en ce moment.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-lg-5">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="fw-bold m-0">Statut du Compte</h5>
+                            </div>
+                            <div class="stat-card mb-4 bg-light border-0">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <span class="fw-bold">{% if donneur.actif %}Actif & Disponible{% else %}Indisponible{% endif %}</span>
+                                        <p class="text-muted small m-0">Basculez votre statut si vous ne pouvez pas donner en ce moment.</p>
+                                    </div>
+                                    <div class="form-check form-switch fs-4">
+                                        <input class="form-check-input" type="checkbox" role="switch" {% if donneur.actif %}checked{% endif %} data-url="{% url 'toggle_donor_active' %}" onclick="window.location.href=this.dataset.url;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5 class="fw-bold mb-4 mt-5">Historique des Dons</h5>
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                                <ul class="list-group list-group-flush small">
+                                    {% for don in historique_dons %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                            <div>
+                                                <span class="fw-bold">{{ don.hopital.nom }}</span><br>
+                                                <span class="text-muted">{{ don.date_don|date:"d F Y" }}</span>
+                                            </div>
+                                            <span class="badge {% if don.valide %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                                {% if don.valide %}Validé{% else %}En attente{% endif %}
+                                            </span>
+                                        </li>
+                                    {% empty %}
+                                        <li class="list-group-item text-center py-4 text-muted italic">Aucun don enregistré.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card p-4">
-          <div class="text-muted small">Nombre de dons</div>
-          <div class="fs-3 fw-bold mt-2 text-danger">4</div>
-          <div class="mt-2 small text-success">Total depuis l'inscription</div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card p-4">
-          <div class="text-muted small">Vies sauvées</div>
-          <div class="fs-3 fw-bold mt-2 text-primary">12</div>
-          <div class="mt-2 small text-muted">Estimation basée sur vos dons</div>
-        </div>
-      </div>
     </div>
 
-    <!-- Recent Activity -->
-    <div class="card p-4">
-      <h5 class="fw-bold mb-4">Dernières Activités</h5>
-      <div class="table-responsive">
-        <table class="table align-middle">
-          <thead>
-            <tr class="text-muted small">
-              <th>Type</th>
-              <th>Lieu</th>
-              <th>Date</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="fw-semibold">Don de sang</td>
-              <td>Hôpital de Tunis</td>
-              <td>12 Jan 2024</td>
-              <td><span class="badge bg-success-subtle text-success rounded-pill px-3">Validé</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Réponses à la demande | BloodConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            {% include 'demandes/sidebar_hopital.html' %}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <a href="{% url 'dashboard_hopital' %}" class="btn btn-sm btn-outline-dark mb-2"><i class="fas fa-arrow-left"></i> Retour</a>
+                    <h3 class="fw-bold m-0">Réponses pour {{ demande.groupe_sanguin }}</h3>
+                    <p class="text-muted">{{ reponses.count }} donneur(s) ont manifesté leur intérêt.</p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Donneur</th>
+                            <th>Ville</th>
+                            <th>Date Réponse</th>
+                            <th>Statut</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reponse in reponses %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="https://ui-avatars.com/api/?name={{ reponse.donneur.user.username }}&background=random" class="rounded-circle" width="32">
+                                        <span class="fw-bold">{{ reponse.donneur.user.get_full_name|default:reponse.donneur.user.username }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ reponse.donneur.ville }}</td>
+                                <td>{{ reponse.date_reponse|date:"d/m/Y H:i" }}</td>
+                                <td><span class="badge bg-info">{{ reponse.statut }}</span></td>
+                                <td><button class="btn btn-sm btn-outline-primary shadow-sm"><i class="fas fa-phone"></i> Appeler</button></td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">Pas encore de réponses à cet appel.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
