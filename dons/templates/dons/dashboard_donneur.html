@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Donneur — BloodConnect</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <style>
+    body { background: #F8F9FA; font-family: 'Inter', sans-serif; }
+    .sidebar { width: 280px; height: 100vh; position: fixed; background: white; border-right: 1px solid #eee; }
+    .main-content { margin-left: 280px; padding: 40px; }
+    .card { border: none; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+    .stat-card { background: linear-gradient(135deg, #DC2626, #991B1B); color: white; }
+    .nav-link { color: #4b5563; padding: 12px 20px; border-radius: 10px; margin: 4px 15px; transition: 0.3s; }
+    .nav-link:hover, .nav-link.active { background: #fee2e2; color: #DC2626; }
+    .logo-box { padding: 30px 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar d-none d-lg-block">
+    <div class="logo-box">
+      <h4 class="fw-bold m-0">Blood<span class="text-danger">Connect</span></h4>
+    </div>
+    <nav class="mt-2">
+      <a href="#" class="nav-link active"><i class="bi bi-grid-1x2-fill me-2"></i> Dashboard</a>
+      <a href="#" class="nav-link"><i class="bi bi-heart-pulse me-2"></i> Mes Dons</a>
+      <a href="#" class="nav-link"><i class="bi bi-search me-2"></i> Chercher une Campagne</a>
+      <a href="#" class="nav-link"><i class="bi bi-person me-2"></i> Profil</a>
+      <hr class="mx-3">
+      <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="bi bi-box-arrow-left me-2"></i> Déconnexion</a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+      <div>
+        <h2 class="fw-bold">Bienvenue, {{ user.first_name }} !</h2>
+        <p class="text-muted">Merci de contribuer à sauver des vies.</p>
+      </div>
+      <div class="badge bg-danger p-2 fs-6 rounded-pill">
+        Groupe: {{ donneur.groupe_sanguin }}
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="card stat-card p-4">
+          <div class="small opacity-75">Statut d'éligibilité</div>
+          <div class="fs-3 fw-bold mt-2">
+            {% if donneur.est_eligble %}Éligible{% else %}En attente{% endif %}
+          </div>
+          <div class="mt-2 small">{% if donneur.est_eligble %}Vous pouvez donner aujourd'hui !{% else %}Prochain don : {{ donneur.prochaine_date_don }}{% endif %}</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4">
+          <div class="text-muted small">Nombre de dons</div>
+          <div class="fs-3 fw-bold mt-2 text-danger">4</div>
+          <div class="mt-2 small text-success">Total depuis l'inscription</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4">
+          <div class="text-muted small">Vies sauvées</div>
+          <div class="fs-3 fw-bold mt-2 text-primary">12</div>
+          <div class="mt-2 small text-muted">Estimation basée sur vos dons</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card p-4">
+      <h5 class="fw-bold mb-4">Dernières Activités</h5>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr class="text-muted small">
+              <th>Type</th>
+              <th>Lieu</th>
+              <th>Date</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="fw-semibold">Don de sang</td>
+              <td>Hôpital de Tunis</td>
+              <td>12 Jan 2024</td>
+              <td><span class="badge bg-success-subtle text-success rounded-pill px-3">Validé</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Établissement — BloodConnect</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <style>
+    body { background: #f0f2f5; font-family: 'Inter', sans-serif; }
+    .sidebar { width: 280px; height: 100vh; position: fixed; background: #1e293b; color: white; }
+    .main-content { margin-left: 280px; padding: 40px; }
+    .nav-link { color: #94a3b8; padding: 12px 20px; border-radius: 10px; margin: 4px 15px; transition: 0.3s; }
+    .nav-link:hover, .nav-link.active { background: #334155; color: white; }
+    .card { border: none; border-radius: 12px; }
+    .stat-badge { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar d-none d-lg-block">
+    <div class="p-4 border-bottom border-secondary mb-3">
+      <h4 class="fw-bold m-0"><i class="bi bi-hospital me-2 text-danger"></i> BloodConnect</h4>
+    </div>
+    <nav>
+      <a href="#" class="nav-link active"><i class="bi bi-speedometer2 me-2"></i> Vue d'ensemble</a>
+      <a href="#" class="nav-link"><i class="bi bi-droplet-half me-2"></i> Demandes de sang</a>
+      <a href="#" class="nav-link"><i class="bi bi-megaphone me-2"></i> Nos Campagnes</a>
+      <a href="#" class="nav-link"><i class="bi bi-people me-2"></i> Donneur locaux</a>
+      <hr class="mx-3 opacity-25">
+      <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="bi bi-power me-2"></i> Déconnexion</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <div class="mb-5 d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="fw-bold">{{ hopital.nom }}</h2>
+        <p class="text-muted"><i class="bi bi-geo-alt me-1"></i> {{ hopital.ville }}, {{ hopital.adresse }}</p>
+      </div>
+      <div class="{% if hopital.valide %}text-success{% else %}text-warning{% endif %} fw-semibold">
+        <i class="bi {% if hopital.valide %}bi-patch-check-fill{% else %}bi-clock-history{% endif %} me-1"></i>
+        {% if hopital.valide %}Établissement vérifié{% else %}Vérification en cours{% endif %}
+      </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-md-3">
+        <div class="card p-4 shadow-sm text-center">
+          <div class="stat-badge bg-primary-subtle text-primary mx-auto mb-3"><i class="bi bi-droplet"></i></div>
+          <h3 class="fw-bold">12</h3>
+          <p class="text-muted small mb-0">Demandes actives</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-4 shadow-sm text-center">
+          <div class="stat-badge bg-success-subtle text-success mx-auto mb-3"><i class="bi bi-check-circle"></i></div>
+          <h3 class="fw-bold">85</h3>
+          <p class="text-muted small mb-0">Dons reçus</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-4 shadow-sm text-center">
+          <div class="stat-badge bg-warning-subtle text-warning mx-auto mb-3"><i class="bi bi-megaphone"></i></div>
+          <h3 class="fw-bold">3</h3>
+          <p class="text-muted small mb-0">Campagnes en cours</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-4 shadow-sm text-center">
+          <div class="stat-badge bg-danger-subtle text-danger mx-auto mb-3"><i class="bi bi-exclamation-triangle"></i></div>
+          <h3 class="fw-bold">2</h3>
+          <p class="text-muted small mb-0">Appels d'urgence</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card p-4 shadow-sm mb-4">
+          <h5 class="fw-bold mb-4">Demandes de sang récentes</h5>
+          <div class="alert alert-info py-2 small border-0">Aucune demande en cours de traitement aujourd'hui.</div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card p-4 shadow-sm">
+          <h5 class="fw-bold mb-4">Action rapide</h5>
+          <button class="btn btn-danger w-100 mb-2 py-2">Nouvelle demande de sang</button>
+          <button class="btn btn-outline-dark w-100 py-2">Lancer une campagne</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,60 +1,37 @@
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import login
-from .models import User, Donneur, Hopital
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import logout
-def register_donneur(request):
+from django.contrib.auth import login, authenticate, logout, get_user_model
+from .models import Donneur, Hopital
+from .forms import DonneurRegistrationForm, HopitalRegistrationForm
+
+User = get_user_model()
+def register_view(request):
+    role = request.GET.get('role', 'donneur')
+    
     if request.method == "POST":
-        user = User.objects.create_user(
-            username=request.POST['username'],
-            email=request.POST['email'],
-            password=request.POST['password1'],
-            first_name=request.POST['first_name'],
-            last_name=request.POST['last_name'],
-        )
+        role = request.POST.get('role', 'donneur')
+        if role == 'hopital':
+            form = HopitalRegistrationForm(request.POST)
+        else:
+            form = DonneurRegistrationForm(request.POST)
+            
+        if form.is_valid():
+            form.save()
+            if role == 'hopital':
+                messages.success(request, "Votre demande a été envoyée pour validation.")
+            else:
+                messages.success(request, "Compte créé avec succès !")
+            return redirect("login")
+    else:
+        if role == 'hopital':
+            form = HopitalRegistrationForm()
+        else:
+            form = DonneurRegistrationForm()
 
-        user.role = "donneur"
-        user.save()
-
-        Donneur.objects.create(
-            user=user,
-            groupe_sanguin=request.POST['groupe_sanguin'],
-            sexe=request.POST['sexe'],
-            date_naissance=request.POST['date_naissance'],
-            ville=request.POST['ville'],
-        )
-
-        messages.success(request, "Compte donneur créé avec succès")
-        return redirect("login")
-
-    return render(request, "comptes/register_donneur.html")
-def register_hopital(request):
-    if request.method == "POST":
-        user = User.objects.create_user(
-            username=request.POST['username'],
-            email=request.POST['email'],
-            password=request.POST['password1'],
-        )
-
-        user.role = "hopital"
-        user.is_active = False  # ⚠️ attente validation admin
-        user.save()
-
-        Hopital.objects.create(
-            user=user,
-            nom=request.POST['nom'],
-            adresse=request.POST['adresse'],
-            ville=request.POST['ville'],
-            agrement=request.POST['agrement'],
-            valide=False
-        )
-
-        messages.success(request, "Compte envoyé pour validation")
-        return redirect("login")
-
-    return render(request, "comptes/register_hopital.html")
+    return render(request, "comptes/registration/register.html", {
+        "form": form,
+        "role": role
+    })
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -63,19 +40,48 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            if not user.is_active:
+                messages.warning(request, "Attention : Votre compte n'est pas encore activé ou est en attente de validation.")
+                return render(request, "comptes/registration/login.html", {"error": "Compte inactif"})
+            
             login(request, user)
-
-            # 🎯 redirection selon rôle
+            
+            # Redirection dynamique selon le rôle
+            if user.is_superuser:
+                return redirect("/admin/")
+            
             if user.role == "donneur":
                 return redirect("dashboard_donneur")
             elif user.role == "hopital":
                 return redirect("dashboard_hopital")
             elif user.role == "admin":
                 return redirect("dashboard_admin")
+            else:
+                return redirect("index")
 
-        return render(request, "comptes/login.html", {"error": "Identifiants incorrects"})
+        return render(request, "comptes/registration/login.html", {"error": "Identifiants ou rôle incorrects"})
 
-    return render(request, "comptes/login.html")
+    return render(request, "comptes/registration/login.html")
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def dashboard_donneur(request):
+    return render(request, "dons/dashboard_donneur.html", {
+        "donneur": request.user.donneur
+    })
+
+@login_required
+def dashboard_hopital(request):
+    return render(request, "demandes/dashboard_hopital.html", {
+        "hopital": request.user.hopital
+    })
+
+@login_required
+def dashboard_admin(request):
+    if not request.user.is_superuser and request.user.role != 'admin':
+        return redirect('login')
+    return render(request, "core/dashboard_admin.html")

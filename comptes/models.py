@@ -1,7 +1,25 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from datetime import timedelta
+
+
+class User(AbstractUser):
+    ROLE_CHOICES = (
+        ('donneur', 'Donneur'),
+        ('hopital', 'Hopital'),
+        ('admin', 'Admin'),
+    )
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='donneur')
+
+    def is_donneur(self):
+        return self.role == 'donneur'
+
+    def is_hopital(self):
+        return self.role == 'hopital'
+
+    def is_admin(self):
+        return self.role == 'admin' or self.is_superuser
 
 
 class Donneur(models.Model):

@@ -131,8 +131,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # =========================
+# EMAIL CONFIGURATION (Local testing)
+# =========================
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# =========================
 # LOGIN SYSTEM
 # =========================
 LOGIN_URL = "/comptes/login/"
-LOGIN_REDIRECT_URL = "/"
+AUTH_USER_MODEL = 'comptes.User'
 LOGOUT_REDIRECT_URL = "/comptes/login/"
