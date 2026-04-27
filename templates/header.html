@@ -12,6 +12,8 @@
                         <a href="{% url 'dashboard_donneur' %}" class="nav-link">Mon Portail Donneur</a>
                     {% elif user.role == 'hopital' %}
                         <a href="{% url 'dashboard_hopital' %}" class="nav-link">Portail Hospitalier</a>
+                    {% elif user.role == 'admin' %}
+                        <a href="{% url 'admin_dashboard' %}" class="nav-link">Tableau de Bord Admin</a>
                     {% endif %}
                 {% endif %}
                 <a href="{% url 'about' %}" class="nav-link">À Propos</a>

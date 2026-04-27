@@ -1,42 +1,33 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Gérer mes campagnes | BloodConnect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-{% include 'navbar.html' %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-2 bg-white min-vh-100 shadow-sm pt-4 px-3">
-            {% include 'demandes/sidebar_hopital.html' %}
-        </div>
-        <div class="col-lg-10 py-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold">Campagnes organisées</h3>
-            <a href="{% url 'creer_campagne' %}" class="btn btn-danger">Créer une campagne</a>
-        </div>
-        <div class="row g-4">
-            {% for c in campagnes %}
-                <div class="col-md-6">
-                    <div class="card border-0 shadow-sm rounded-4 p-4">
-                        <h5 class="fw-bold">{{ c.nom }}</h5>
-                        <p class="text-muted small">{{ c.date|date:"d F Y" }} @ {{ c.lieu }}</p>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="small fw-bold">{{ c.inscriptions.count }} / {{ c.capacite_totale }} inscriptions</span>
-                            <div class="btn-group">
-                                <a href="{% url 'modifier_campagne' c.pk %}" class="btn btn-sm btn-outline-secondary">Modifier</a>
-                                <a href="{% url 'detail_campagne' c.pk %}" class="btn btn-sm btn-outline-primary">Détails</a>
-                            </div>
-                        </div>
+{% extends 'base_hopital.html' %}
+
+{% block title %}Mes Campagnes{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold">Campagnes organisées</h3>
+    <a href="{% url 'creer_campagne' %}" class="btn btn-danger">Créer une campagne</a>
+</div>
+<div class="row g-4">
+    {% for c in campagnes %}
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="fw-bold">{{ c.nom }}</h5>
+                <p class="text-muted small">{{ c.date|date:"d F Y" }} @ {{ c.lieu }}</p>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="small fw-bold">{{ c.inscriptions.count }} / {{ c.capacite_totale }} inscriptions</span>
+                    <div class="btn-group">
+                        <a href="{% url 'modifier_campagne' c.pk %}" class="btn btn-sm btn-outline-secondary">Modifier</a>
+                        <a href="{% url 'detail_campagne' c.pk %}" class="btn btn-sm btn-outline-primary">Détails</a>
                     </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
+    {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">Vous n'avez pas encore organisé de campagne.</p>
+            <a href="{% url 'creer_campagne' %}" class="btn btn-outline-danger">Créer ma première campagne</a>
         </div>
-    </div>
+    {% endfor %}
 </div>
-</html>
+{% endblock %}

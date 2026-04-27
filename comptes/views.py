@@ -48,16 +48,16 @@ def login_view(request):
             
             # Redirection dynamique selon le rôle
             if user.is_superuser:
-                return redirect("/admin/")
+                return redirect("admin_dashboard")
             
             if user.role == "donneur":
                 return redirect("dashboard_donneur")
             elif user.role == "hopital":
                 return redirect("dashboard_hopital")
             elif user.role == "admin":
-                return redirect("dashboard_admin")
+                return redirect("admin_dashboard")
             else:
-                return redirect("index")
+                return redirect("accueil")
 
         return render(request, "comptes/registration/login.html", {"error": "Identifiants ou rôle incorrects"})
 
@@ -104,7 +104,12 @@ def dashboard_donneur(request):
 
 @login_required
 def dashboard_hopital(request):
+    if not hasattr(request.user, 'hopital'):
+        messages.error(request, "Accès refusé : Ce compte n'est pas configuré comme un hôpital.")
+        return redirect('accueil')
+    
     hopital = request.user.hopital
+        
     demandes_actives = hopital.demandes.filter(statut='active')
     return render(request, "demandes/dashboard_hopital.html", {
         "hopital": hopital,
@@ -114,10 +119,16 @@ def dashboard_hopital(request):
 @login_required
 def profile_update(request):
     if request.user.role == 'donneur':
+        if not hasattr(request.user, 'donneur'):
+            messages.error(request, "Profil donneur introuvable.")
+            return redirect('accueil')
         from .forms import DonneurUpdateForm
         instance = request.user.donneur
         form_class = DonneurUpdateForm
     else:
+        if not hasattr(request.user, 'hopital'):
+            messages.error(request, "Profil hôpital introuvable.")
+            return redirect('accueil')
         from .forms import HopitalUpdateForm
         instance = request.user.hopital
         form_class = HopitalUpdateForm
@@ -135,11 +146,6 @@ def profile_update(request):
 @login_required
 def profile(request):
     return render(request, "comptes/profile.html")
-@login_required
-def dashboard_admin(request):
-    if not request.user.is_superuser and request.user.role != 'admin':
-        return redirect('login')
-    return render(request, "core/dashboard_admin.html")
 
 @login_required
 def toggle_donor_active(request):

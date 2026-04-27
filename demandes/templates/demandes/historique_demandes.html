@@ -1,59 +1,50 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Historique des demandes | BloodConnect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-</head>
-<body class="bg-light">
-    {% include 'demandes/sidebar_hopital.html' %}
-    <div class="container py-5">
-        <div class="card border-0 shadow-sm rounded-4 p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <a href="{% url 'dashboard_hopital' %}" class="btn btn-sm btn-outline-dark mb-2"><i class="fas fa-arrow-left"></i> Tableau de bord</a>
-                    <h3 class="fw-bold m-0">Historique des Demandes</h3>
-                </div>
-                <a href="{% url 'ajouter_demande' %}" class="btn btn-danger rounded-pill"><i class="fas fa-plus"></i> Nouvelle demande</a>
-            </div>
+{% extends 'base_hopital.html' %}
 
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Groupe</th>
-                            <th>Quantité</th>
-                            <th>Date Limite</th>
-                            <th>Description</th>
-                            <th>Statut</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for de in demandes %}
-                            <tr>
-                                <td><span class="badge bg-danger fs-6">{{ de.groupe_sanguin }}</span></td>
-                                <td class="fw-bold">{{ de.quantite }} poches</td>
-                                <td>{{ de.delai|date:"d/m/Y H:i" }}</td>
-                                <td class="text-muted"><small>{{ de.description|truncatechars:50 }}</small></td>
-                                <td>
-                                    {% if de.statut == 'active' %}
-                                        <span class="badge bg-success">Active</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary">Clôturée</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <a href="{% url 'voir_reponses' de.pk %}" class="btn btn-sm btn-link text-decoration-none fw-bold">Détails</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+{% block title %}Historique des demandes{% endblock %}
+
+{% block content %}
+<div class="card-custom">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{% url 'dashboard_hopital' %}" class="btn btn-sm btn-outline-dark mb-2"><i class="fas fa-arrow-left"></i> Tableau de bord</a>
+            <h3 class="fw-bold m-0">Historique des Demandes</h3>
         </div>
+        <a href="{% url 'ajouter_demande' %}" class="btn btn-danger rounded-pill"><i class="fas fa-plus"></i> Nouvelle demande</a>
     </div>
-</body>
-</html>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Groupe</th>
+                    <th>Quantité</th>
+                    <th>Date Limite</th>
+                    <th>Description</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for de in demandes %}
+                    <tr>
+                        <td><span class="badge bg-danger fs-6">{{ de.groupe_sanguin }}</span></td>
+                        <td class="fw-bold">{{ de.quantite }} poches</td>
+                        <td>{{ de.delai|date:"d/m/Y H:i" }}</td>
+                        <td class="text-muted"><small>{{ de.description|truncatechars:50 }}</small></td>
+                        <td>
+                            {% if de.statut == 'active' %}
+                                <span class="badge bg-success-subtle text-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary">Clôturée</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'voir_reponses' de.pk %}" class="btn btn-sm btn-link text-decoration-none fw-bold">Détails</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

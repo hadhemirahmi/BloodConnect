@@ -4,7 +4,7 @@ from .models import DemandeUrgente
 class DemandeUrgenteForm(forms.ModelForm):
     class Meta:
         model = DemandeUrgente
-        fields = ['hopital', 'groupe_sanguin', 'quantite', 'delai', 'statut', 'description']
+        fields = ['groupe_sanguin', 'quantite', 'delai', 'description']
 
         widgets = {
             'delai': forms.DateTimeInput(attrs={'type': 'datetime-local'}),

@@ -1,29 +1,21 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Clôturer Demande | BloodConnect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light d-flex align-items-center min-vh-100">
-    {% include 'demandes/sidebar_hopital.html' %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
-                    <h4 class="fw-bold mb-4">Confirmer la clôture</h4>
-                    <p>Êtes-vous sûr de vouloir clôturer cette demande urgente ? Cette action est irréversible.</p>
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-danger py-2 fw-bold">Oui, clôturer la demande</button>
-                            <a href="{% url 'historique_demandes' %}" class="btn btn-outline-secondary">Annuler</a>
-                        </div>
-                    </form>
+{% extends 'base_hopital.html' %}
+
+{% block title %}Clôturer Demande{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card-custom text-center">
+            <h4 class="fw-bold mb-4">Confirmer la clôture</h4>
+            <p>Êtes-vous sûr de vouloir clôturer cette demande urgente ? Cette action est irréversible.</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-danger py-2 fw-bold">Oui, clôturer la demande</button>
+                    <a href="{% url 'historique_demandes' %}" class="btn btn-outline-secondary">Annuler</a>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

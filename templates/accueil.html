@@ -129,6 +129,16 @@
 
     {% include 'header.html' %}
 
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0 rounded-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <section class="hero">
         <div class="container">
@@ -146,8 +156,8 @@
                         en temps réel pour une réponse vitale immédiate.
                     </p>
                     <div class="d-flex gap-3">
-                        <a href="/dons/ajouter/" class="btn btn-primary-red">Je veux donner</a>
-                        <a href="/demandes/" class="btn btn-outline-custom">Mon hôpital a besoin de sang</a>
+                        <a href="{% url 'compatible_calls' %}" class="btn btn-primary-red">Je veux donner</a>
+                        <a href="{% url 'dashboard_hopital' %}" class="btn btn-outline-custom">Mon hôpital a besoin de sang</a>
                     </div>
                 </div>
                 <div class="col-lg-5 mt-5 mt-lg-0">
@@ -252,7 +262,7 @@
                         <div class="portal-overlay">
                             <h3>Espace Donneurs</h3>
                             <p>Gérez vos dons, suivez vos statistiques et découvrez votre impact sur la communauté.</p>
-                            <a href="/dons/" class="portal-link">Accéder à mon espace <i
+                            <a href="{% url 'dashboard_donneur' %}" class="portal-link">Accéder à mon espace <i
                                     class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
@@ -263,7 +273,7 @@
                         <div class="portal-overlay">
                             <h3>Espace Hôpitaux</h3>
                             <p>Gérez vos stocks, lancez des appels d'urgence et coordonnez les livraisons de plasma.</p>
-                            <a href="/hopitaux/" class="portal-link">Portail Hospitalier <i
+                            <a href="{% url 'dashboard_hopital' %}" class="portal-link">Portail Hospitalier <i
                                     class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>

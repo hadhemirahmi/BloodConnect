@@ -27,6 +27,18 @@ class DonneurRegistrationForm(forms.Form):
     date_naissance = forms.DateField(label="Date de naissance", widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
     ville = forms.CharField(label="Ville", widget=forms.TextInput(attrs={'class': 'form-control'}))
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("Ce nom d'utilisateur est déjà utilisé.")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Cette adresse email est déjà utilisée.")
+        return email
+
     def clean(self):
         cleaned_data = super().clean()
         p1 = cleaned_data.get('password1')
@@ -89,6 +101,24 @@ class HopitalRegistrationForm(forms.Form):
     ville = forms.CharField(label="Ville", widget=forms.TextInput(attrs={'class': 'form-control'}))
     agrement = forms.CharField(label="Numéro d'agrément", widget=forms.TextInput(attrs={'class': 'form-control'}))
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("Ce nom d'utilisateur est déjà utilisé.")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Cette adresse email est déjà utilisée.")
+        return email
+
+    def clean_agrement(self):
+        agrement = self.cleaned_data.get('agrement')
+        if Hopital.objects.filter(agrement=agrement).exists():
+            raise forms.ValidationError("Ce numéro d'agrément est déjà utilisé.")
+        return agrement
+
     def clean(self):
         cleaned_data = super().clean()
         p1 = cleaned_data.get('password1')
@@ -105,7 +135,7 @@ class HopitalRegistrationForm(forms.Form):
             password=data['password1'],
             first_name=data['nom'],
             role='hopital',
-            is_active=False
+            is_active=True
         )
         Hopital.objects.create(
             user=user,

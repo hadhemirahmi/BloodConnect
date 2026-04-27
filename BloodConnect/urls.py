@@ -25,6 +25,7 @@ urlpatterns = [
     path("dons/", include("dons.urls")),
     path("demandes/", include("demandes.urls")),
     path("campagnes/", include("campagnes.urls")),
+    path("core/", include("core.urls")),
 
     path("", views.accueil, name="accueil"),
     path("about/", views.about, name="about"),
