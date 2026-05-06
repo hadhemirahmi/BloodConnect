@@ -7,4 +7,5 @@ urlpatterns = [
     path('<int:pk>/cloturer/', views.DemandeDeleteView.as_view(), name='cloturer_demande'),
     path('<int:pk>/reponses/', views.DemandeDetailView.as_view(), name='voir_reponses'),
     path('historique/', views.DemandeListView.as_view(), name='historique_demandes'),
+    
 ]

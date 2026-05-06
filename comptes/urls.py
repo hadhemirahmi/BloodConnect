@@ -16,4 +16,14 @@ urlpatterns = [
     path("profile/modifier/", views.profile_update, name="profile_update"),
     path("profile/toggle-actif/", views.toggle_donor_active, name="toggle_donor_active"),
     path("profile/", views.profile, name="profile"),
+
+
+
+
+    path('admin/hopitaux/',                             views.valider_hopitaux_page, name='valider_hopitaux'),
+    path('admin/hopitaux/<int:hopital_id>/valider/',    views.valider_hopital,       name='valider_hopital'),
+    path('admin/hopitaux/<int:hopital_id>/rejeter/',    views.rejeter_hopital,       name='rejeter_hopital'),
+
+
+
  ]
