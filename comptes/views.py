@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from .models import Donneur, Hopital
 from .forms import DonneurRegistrationForm, HopitalRegistrationForm
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import user_passes_test
 
 User = get_user_model()
 def register_view(request):
@@ -156,3 +158,38 @@ def toggle_donor_active(request):
         status = "réactivé" if donneur.actif else "désactivé (indisponible)"
         messages.success(request, f"Votre compte a été {status}.")
     return redirect('dashboard_donneur')
+
+
+
+
+
+def is_admin(user):
+    return user.is_authenticated and user.is_staff
+
+@user_passes_test(is_admin)
+def valider_hopitaux_page(request):
+    hopitaux_en_attente = Hopital.objects.filter(valide=False).select_related('user')
+    hopitaux_valides    = Hopital.objects.filter(valide=True).select_related('user')
+    return render(request, 'core/valider_hopitaux.html', {
+        'hopitaux_en_attente': hopitaux_en_attente,
+        'hopitaux_valides'   : hopitaux_valides,
+    })
+
+@user_passes_test(is_admin)
+def valider_hopital(request, hopital_id):
+    hopital = get_object_or_404(Hopital, id=hopital_id)
+    hopital.valide = True
+    hopital.user.is_active = True
+    hopital.user.save()
+    hopital.save()
+    messages.success(request, f"✅ {hopital.nom} validé avec succès.")
+    return redirect('valider_hopitaux')
+
+@user_passes_test(is_admin)
+def rejeter_hopital(request, hopital_id):
+    hopital = get_object_or_404(Hopital, id=hopital_id)
+    nom = hopital.nom
+    hopital.user.delete()
+    messages.error(request, f"❌ {nom} rejeté et supprimé.")
+    return redirect('valider_hopitaux')
+    
