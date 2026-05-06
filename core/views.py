@@ -54,3 +54,7 @@ def demandes_par_ville(request, ville):
         'ville': ville_affichee,
         'ville_affichee': ville_affichee
     })
+
+
+
+  

@@ -6,3 +6,6 @@ urlpatterns = [
     path('admin/demandes/ville/<str:ville>/', views.demandes_par_ville, name='Demandes_parV'),
     
 ]
+
+
+ 
