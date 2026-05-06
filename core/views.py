@@ -23,3 +23,34 @@ def dashboard_admin(request):
     }
     
     return render(request, "core/dashboard_admin.html", context)
+# views.py
+
+@login_required
+def demandes_par_ville(request, ville):
+    """Affiche la liste des demandes urgentes pour une ville spécifique"""
+    if not request.user.is_superuser and request.user.role != 'admin':
+        return redirect('login')
+    
+    ville_recherchee = ville
+    
+    # Gérer la recherche via POST ou GET
+    if request.method == 'GET' and 'ville' in request.GET:
+        ville_recherchee = request.GET.get('ville')
+    
+    # Si ville = 'toutes' ou vide, afficher toutes les demandes
+    if ville_recherchee == 'toutes' or not ville_recherchee:
+        demandes = DemandeUrgente.objects.filter(statut='active').select_related('hopital')
+        ville_affichee = "Toutes les villes"
+    else:
+        # Filtrer par ville (insensible à la casse)
+        demandes = DemandeUrgente.objects.filter(
+            statut='active',
+            hopital__ville__iexact=ville_recherchee
+        ).select_related('hopital')
+        ville_affichee = ville_recherchee
+    
+    return render(request, "core/Demandes_parV.html", {
+        'demandes': demandes,
+        'ville': ville_affichee,
+        'ville_affichee': ville_affichee
+    })
