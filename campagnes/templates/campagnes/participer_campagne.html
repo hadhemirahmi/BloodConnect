@@ -25,7 +25,11 @@
                         <div>
                             <h2 class="fw-bold mb-1">{{ campagne.nom }}</h2>
                             <p class="text-muted"><i class="fas fa-map-marker-alt"></i> {{ campagne.lieu }} | <i class="fas fa-clock"></i> {{ campagne.date|date:"d F Y" }}</p>
-                            <span class="badge bg-danger">Groupes ciblés: {{ campagne.groupes_cibles }}</span>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for group in campagne.groupes_cibles_list %}
+                                    <span class="badge bg-danger">{{ group }}</span>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>

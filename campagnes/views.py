@@ -95,6 +95,19 @@ def mes_campagnes(request):
         inscriptions = Inscription.objects.filter(donneur=request.user.donneur).select_related('campagne')
         return render(request, 'campagnes/mes_campagnes_donneur.html', {'inscriptions': inscriptions})
     else:
-        campagnes = request.user.hopital.campagnes.all()
+        campagnes = request.user.hopital.campagnes.all().order_by('-date')
         return render(request, 'campagnes/mes_campagnes_hopital.html', {'campagnes': campagnes})
+
+@login_required
+def inscriptions_campagne(request, campagne_id):
+    if request.user.role != 'hopital':
+        return redirect('index')
+    
+    campagne = get_object_or_404(Campagne, pk=campagne_id, hopital=request.user.hopital)
+    inscriptions = campagne.inscriptions.all().select_related('donneur__user').order_by('creneau_index')
+    
+    return render(request, 'campagnes/inscriptions_campagne.html', {
+        'campagne': campagne,
+        'inscriptions': inscriptions
+    })
 

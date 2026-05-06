@@ -13,6 +13,12 @@ class Campagne(models.Model):
         return self.nom
 
     @property
+    def groupes_cibles_list(self):
+        if not self.groupes_cibles:
+            return []
+        return self.groupes_cibles.split(',')
+
+    @property
     def capacite_totale(self):
         return self.capacite_par_creneau * self.nb_creneaux
 

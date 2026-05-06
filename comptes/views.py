@@ -96,10 +96,19 @@ def dashboard_donneur(request):
     # Historique des dons
     historique_dons = donneur.dons.all().order_by('-date_don')
     
+    # Inscriptions aux campagnes (Rappels)
+    from campagnes.models import Inscription
+    from django.utils import timezone
+    prochaines_inscriptions = Inscription.objects.filter(
+        donneur=donneur,
+        campagne__date__gte=timezone.now().date()
+    ).select_related('campagne').order_by('campagne__date')
+    
     return render(request, "dons/dashboard_donneur.html", {
         "donneur": donneur,
         "demandes_compatibles": demandes_compatibles,
         "historique_dons": historique_dons,
+        "prochaines_inscriptions": prochaines_inscriptions,
     })
 
 @login_required

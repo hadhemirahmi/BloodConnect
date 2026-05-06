@@ -147,6 +147,36 @@
 
                         <div class="col-lg-5">
                             <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="fw-bold m-0">Rappels : Mes Collectes</h5>
+                            </div>
+                            {% if prochaines_inscriptions %}
+                                {% for inscription in prochaines_inscriptions %}
+                                    <div class="card border-0 shadow-sm rounded-4 mb-3" style="background: linear-gradient(135deg, #FFF1F2 0%, #FFF 100%); border-left: 5px solid var(--primary) !important;">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h6 class="fw-bold mb-1">{{ inscription.campagne.nom }}</h6>
+                                                    <p class="text-muted small mb-0">
+                                                        <i class="fas fa-calendar-day me-1"></i> {{ inscription.campagne.date|date:"d F Y" }}<br>
+                                                        <i class="fas fa-clock me-1"></i> {{ inscription.creneau_horaire }}<br>
+                                                        <i class="fas fa-map-marker-alt me-1"></i> {{ inscription.campagne.lieu }}
+                                                    </p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="badge bg-danger rounded-pill px-3">Inscrit</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center py-4 bg-white rounded-4 border mb-4">
+                                    <p class="text-muted small m-0 italic">Aucune inscription à venir.</p>
+                                    <a href="{% url 'campagne_list' %}" class="btn btn-link btn-sm text-danger text-decoration-none p-0 mt-2">Trouver une campagne</a>
+                                </div>
+                            {% endif %}
+
+                            <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
                                 <h5 class="fw-bold m-0">Statut du Compte</h5>
                             </div>
                             <div class="stat-card mb-4 bg-light border-0">

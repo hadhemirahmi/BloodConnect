@@ -37,7 +37,11 @@
                         <div class="mt-auto">
                             <hr>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge bg-light text-danger border border-danger">Cible: {{ campagne.groupes_cibles }}</span>
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for group in campagne.groupes_cibles_list %}
+                                        <span class="badge bg-light text-danger border border-danger">{{ group }}</span>
+                                    {% endfor %}
+                                </div>
                                 <a href="{% url 'participer_campagne' campagne.pk %}" class="btn btn-danger btn-sm rounded-pill px-3 fw-bold">S'inscrire</a>
                             </div>
                         </div>
