@@ -6,3 +6,4 @@ admin.site.register(ReponseAppel)
 from .models import DemandeUrgente
 admin.site.register(DemandeUrgente)
 
+  

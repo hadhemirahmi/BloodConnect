@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord | BloodConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #DC2626;
+            --secondary: #FEE2E2;
+            --dark: #1E293B;
+            --accent: #FCA5A5;
+        }
+        body { background: #F8FAFC; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
+        .sidebar { background: white; border-right: 1px solid #E2E8F0; min-height: 100vh; padding: 2rem 1rem; }
+        .nav-link { color: #64748B; border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 0.5rem; transition: 0.3s; font-weight: 500; }
+        .nav-link:hover, .nav-link.active { background: var(--secondary); color: var(--primary); }
+        .nav-link i { margin-right: 0.8rem; }
+        .dashboard-content { padding: 2rem; }
+        .stat-card { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+        .stat-icon { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem; }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+        .table-custom { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; }
+        .table-custom th { background: #F8FAFC; border-bottom: 2px solid #E2E8F0; color: var(--dark); font-weight: 600; padding: 1rem; }
+        .table-custom td { vertical-align: middle; border-bottom: 1px solid #F1F5F9; padding: 1rem; }
+        .badge-blood { background: #FEE2E2; color: #DC2626; padding: 0.35rem 0.85rem; border-radius: 50px; font-weight: 700; font-size: 0.8rem; }
+        .badge-quantite { background: #F0FDF4; color: #166534; padding: 0.35rem 0.85rem; border-radius: 50px; font-weight: 600; }
+        .badge-delai { background: #FEF9C3; color: #854D0E; padding: 0.35rem 0.85rem; border-radius: 50px; font-weight: 600; }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 sidebar d-none d-lg-block">
+                <div class="d-flex align-items-center gap-2 mb-5 px-3">
+                    <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-heart text-white small"></i>
+                    </div>
+                    <span class="fw-bold fs-5">BloodConnect</span>
+                </div>
+                <nav class="nav flex-column">
+                    <a href="{% url 'table_de_bord' %}" class="nav-link active"><i class="fas fa-chart-line"></i> Tableau de bord</a>
+                    <a href="{% url 'admin_dashboard' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard Admin</a>
+                    <a href="{% url 'Demandes_parV' ville='toutes' %}" class="nav-link"><i class="fas fa-map-marker-alt"></i> Demandes par ville</a>
+                    <a href="{% url 'profile' %}" class="nav-link"><i class="fas fa-user-edit"></i> Mon Profil</a>
+                    <hr class="my-4 text-muted">
+                    <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-10 p-0">
+                <div class="glass-header d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold m-0">
+                        <i class="fas fa-chart-line text-danger me-2"></i>
+                        Tableau de bord - Statistiques par groupe sanguin
+                    </h5>
+                    <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DC2626&color=fff" class="rounded-circle" width="40" alt="Avatar">
+                </div>
+
+                <div class="dashboard-content">
+                    <!-- Cartes statistiques -->
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: #E0F2FE; color: #0369A1;">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <span class="text-muted small fw-medium">Total Donneurs</span>
+                                <h2 class="fw-bold mt-1 mb-0">{{ total_donneurs }}</h2>
+                                <p class="text-muted small mb-0 mt-2">Donneurs inscrits</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: #DCFCE7; color: #166534;">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <span class="text-muted small fw-medium">Total Dons</span>
+                                <h2 class="fw-bold mt-1 mb-0">{{ total_dons }}</h2>
+                                <p class="text-muted small mb-0 mt-2">Dons effectués</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: #FEE2E2; color: #DC2626;">
+                                    <i class="fas fa-ambulance"></i>
+                                </div>
+                                <span class="text-muted small fw-medium">Demandes actives</span>
+                                <h2 class="fw-bold mt-1 mb-0">{{ total_demandes_actives }}</h2>
+                                <p class="text-muted small mb-0 mt-2">Appels urgents</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: #FEF3C7; color: #D97706;">
+                                    <i class="fas fa-hospital-user"></i>
+                                </div>
+                                <span class="text-muted small fw-medium">Hôpitaux</span>
+                                <h2 class="fw-bold mt-1 mb-0">{{ total_hopitaux }}</h2>
+                                <p class="text-muted small mb-0 mt-2">{{ hopitaux_en_attente }} en attente</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Demandes par groupe sanguin -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <h5 class="fw-bold mb-3">
+                                    <i class="fas fa-tint text-danger me-2"></i>
+                                    Demandes actives par groupe sanguin
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Groupe sanguin</th>
+                                                <th>Nombre de demandes</th>
+                                                <th>Poches nécessaires</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for groupe in demandes_par_groupe %}
+                                            <tr>
+                                                <td><span class="badge-blood">{{ groupe.groupe_sanguin }}</span></td>
+                                                <td>{{ groupe.total_demandes }}</td>
+                                                <td>{{ groupe.total_quantite }} poche(s)</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="3" class="text-muted text-center">Aucune demande active</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <h5 class="fw-bold mb-3">
+                                    <i class="fas fa-chart-simple text-danger me-2"></i>
+                                    Dons par groupe sanguin
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Groupe sanguin</th>
+                                                <th>Nombre de dons</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for groupe in dons_par_groupe %}
+                                            <tr>
+                                                <td><span class="badge-blood">{{ groupe.groupe_sanguin }}</span></td>
+                                                <td>{{ groupe.total_dons }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="2" class="text-muted text-center">Aucun don enregistré</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Liste des demandes actives récentes -->
+                    <div class="stat-card mt-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-clock text-danger me-2"></i>
+                            Dernières demandes actives
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Hôpital</th>
+                                        <th>Ville</th>
+                                        <th>Groupe sanguin</th>
+                                        <th>Quantité</th>
+                                        <th>Délai</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for demande in demandes_actives %}
+                                    <tr>
+                                        <td>{{ demande.hopital.nom }}</td>
+                                        <td>{{ demande.hopital.ville }}</td>
+                                        <td><span class="badge-blood">{{ demande.groupe_sanguin }}</span></td>
+                                        <td><span class="badge-quantite">{{ demande.quantite }} poche(s)</span></td>
+                                        <td><span class="badge-delai">{{ demande.delai|date:"d/m/Y H:i" }}</span></td>
+                                        <td>{{ demande.description|default:"-"|truncatechars:30 }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-muted text-center">Aucune demande active</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
