@@ -10,4 +10,5 @@ urlpatterns = [
     path('mes_campagnes/', views.mes_campagnes, name='mes_campagnes'),
     path('participer/<int:campagne_id>/', views.participer_campagne, name='participer_campagne'),
     path('<int:campagne_id>/inscriptions/', views.inscriptions_campagne, name='inscriptions_campagne'),
+    path('valider_presence/<int:inscription_id>/', views.valider_presence, name='valider_presence'),
 ]

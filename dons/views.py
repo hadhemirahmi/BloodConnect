@@ -4,12 +4,18 @@ from django.contrib import messages
 from .models import Don
 from .forms import DonForm
 from demandes.models import DemandeUrgente, ReponseAppel
+from core.utils import get_compatible_groups, is_compatible
 
 @login_required
 def enregistrer_don(request):
     if request.user.role != 'donneur':
         return redirect('index')
         
+    donneur = request.user.donneur
+    if not donneur.est_eligible():
+        messages.error(request, f"Vous n'êtes pas encore éligible pour enregistrer un don. Prochaine date : {donneur.prochaine_date_don}")
+        return redirect('dashboard_donneur')
+
     if request.method == 'POST':
         form = DonForm(request.POST)
         if form.is_valid():
@@ -32,13 +38,23 @@ def repondre_appel(request, pk):
     if request.user.role != 'donneur':
         return redirect('index')
         
+    donneur = request.user.donneur
+    if not donneur.est_eligible():
+        messages.error(request, f"Vous n'êtes pas encore éligible pour répondre à cet appel. Prochaine date : {donneur.prochaine_date_don}")
+        return redirect('dashboard_donneur')
+
     demande = get_object_or_404(DemandeUrgente, pk=pk, statut='active')
     
+    # Vérifier la compatibilité
+    if not is_compatible(donneur.groupe_sanguin, demande.groupe_sanguin):
+        messages.error(request, f"Votre groupe sanguin ({donneur.groupe_sanguin}) n'est pas compatible avec cette demande ({demande.groupe_sanguin}).")
+        return redirect('liste_appels_compatibles')
+
     # Vérifier si déjà répondu
-    if ReponseAppel.objects.filter(demande=demande, donneur=request.user.donneur).exists():
+    if ReponseAppel.objects.filter(demande=demande, donneur=donneur).exists():
         messages.info(request, "Vous avez déjà répondu à cet appel.")
     else:
-        ReponseAppel.objects.create(demande=demande, donneur=request.user.donneur)
+        ReponseAppel.objects.create(demande=demande, donneur=donneur)
         messages.success(request, "Votre intention de don a été transmise à l'hôpital.")
         
     return redirect('dashboard_donneur')
@@ -49,18 +65,7 @@ def liste_appels_compatibles(request):
         return redirect('index')
     
     donneur = request.user.donneur
-    # Logique de compatibilité sanguine (Qui peut donner à qui)
-    compatibility_map = {
-        'O-': ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'],
-        'O+': ['O+', 'A+', 'B+', 'AB+'],
-        'A-': ['A-', 'A+', 'AB-', 'AB+'],
-        'A+': ['A+', 'AB+'],
-        'B-': ['B-', 'B+', 'AB-', 'AB+'],
-        'B+': ['B+', 'AB+'],
-        'AB-': ['AB-', 'AB+'],
-        'AB+': ['AB+'],
-    }
-    target_groups = compatibility_map.get(donneur.groupe_sanguin, [donneur.groupe_sanguin])
+    target_groups = get_compatible_groups(donneur.groupe_sanguin)
     
     appels = DemandeUrgente.objects.filter(
         groupe_sanguin__in=target_groups,

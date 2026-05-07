@@ -101,14 +101,14 @@
                                 </div>
                                 <span class="text-muted small fw-medium">Éligibilité</span>
                                 <h3 class="fw-bold mt-1">
-                                    {% if donneur.est_eligble %}
+                                    {% if donneur.est_eligible %}
                                         <span class="text-success">Disponible</span>
                                     {% else %}
                                         {{ donneur.prochaine_date_don|date:"d M Y" }}
                                     {% endif %}
                                 </h3>
                                 <div>
-                                    {% if donneur.est_eligble %}
+                                    {% if donneur.est_eligible %}
                                         <span class="badge-eligibility">Vous pouvez donner aujourd'hui !</span>
                                     {% else %}
                                         <span class="badge-waiting">En attente de récupération</span>

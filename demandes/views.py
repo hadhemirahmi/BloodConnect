@@ -5,11 +5,23 @@ from django.urls import reverse_lazy
 from .models import DemandeUrgente, ReponseAppel
 from .forms import DemandeUrgenteForm
 
+from django.contrib import messages
+
 class HospitalRoleMixin(UserPassesTestMixin):
     def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.role == 'hopital'
+        if not (self.request.user.is_authenticated and self.request.user.role == 'hopital'):
+            return False
+        
+        # Vérifier si l'hôpital est validé par l'admin
+        hopital = getattr(self.request.user, 'hopital', None)
+        if hopital and not hopital.valide:
+            messages.warning(self.request, "Votre compte hôpital doit être validé par un administrateur avant de pouvoir publier des demandes.")
+            return False
+        return True
     
     def handle_no_permission(self):
+        if self.request.user.is_authenticated and self.request.user.role == 'hopital':
+            return redirect('dashboard_hopital')
         return redirect('login')
 
 class DemandeCreateView(LoginRequiredMixin, HospitalRoleMixin, CreateView):

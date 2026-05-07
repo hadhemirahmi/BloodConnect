@@ -39,6 +39,31 @@
                 </div>
             {% endfor %}
         </div>
+      
+        <div class="mt-5 pt-5 border-top">
+            <h4 class="fw-bold mb-4 text-center">Tableau de Compatibilité Sanguine</h4>
+            <div class="table-responsive shadow-sm rounded-4 bg-white p-3">
+                <table class="table table-hover align-middle text-center m-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="border-0">Groupe</th>
+                            <th class="border-0">Peut donner à</th>
+                            <th class="border-0">Peut recevoir de</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>O-</strong></td><td><span class="badge bg-secondary">Tous (Donneur universel)</span></td><td>O-</td></tr>
+                        <tr><td><strong>O+</strong></td><td>O+, A+, B+, AB+</td><td>O-, O+</td></tr>
+                        <tr><td><strong>A-</strong></td><td>A-, A+, AB-, AB+</td><td>O-, A-</td></tr>
+                        <tr><td><strong>A+</strong></td><td>A+, AB+</td><td>O-, O+, A-, A+</td></tr>
+                        <tr><td><strong>B-</strong></td><td>B-, B+, AB-, AB+</td><td>O-, B-</td></tr>
+                        <tr><td><strong>B+</strong></td><td>B+, AB+</td><td>O-, O+, B-, B+</td></tr>
+                        <tr><td><strong>AB-</strong></td><td>AB-, AB+</td><td>O-, A-, B-, AB-</td></tr>
+                        <tr><td><strong>AB+</strong></td><td>AB+</td><td><span class="badge bg-secondary">Tous (Receveur universel)</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </body>
 </html>

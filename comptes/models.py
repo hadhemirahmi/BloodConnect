@@ -40,11 +40,11 @@ class Donneur(models.Model):
     @property
     def prochaine_date_don(self):
         if not self.derniere_don:
-            return "Immédiatement"
+            return None
         jours = 56 if self.sexe == 'M' else 84
         return self.derniere_don + timedelta(days=jours)
 
-    def est_eligble(self):
+    def est_eligible(self):
         if not self.derniere_don:
             return True
         jours = 56 if self.sexe == 'M' else 84

@@ -28,3 +28,15 @@ class CampagneForm(forms.ModelForm):
     def clean_groupes_cibles(self):
         data = self.cleaned_data['groupes_cibles']
         return ','.join(data)
+
+    def clean_capacite_par_creneau(self):
+        val = self.cleaned_data['capacite_par_creneau']
+        if val < 1:
+            raise forms.ValidationError("La capacité doit être d'au moins 1 personne.")
+        return val
+
+    def clean_nb_creneaux(self):
+        val = self.cleaned_data['nb_creneaux']
+        if val < 1:
+            raise forms.ValidationError("Il doit y avoir au moins 1 créneau.")
+        return val

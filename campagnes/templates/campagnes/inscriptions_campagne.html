@@ -43,7 +43,13 @@
                         <td class="fw-bold text-primary">{{ ins.creneau_horaire }}</td>
                         <td>{{ ins.date_inscription|date:"d/m/Y H:i" }}</td>
                         <td class="text-end">
-                            <button class="btn btn-sm btn-outline-success"><i class="fas fa-check"></i> Présent</button>
+                            {% if not ins.present %}
+                                <a href="{% url 'valider_presence' ins.id %}" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-check"></i> Valider Présence
+                                </a>
+                            {% else %}
+                                <span class="badge bg-success"><i class="fas fa-check-double"></i> Présent</span>
+                            {% endif %}
                         </td>
                     </tr>
                 {% empty %}
