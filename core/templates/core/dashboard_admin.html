@@ -9,16 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
-            --primary: #DC2626;
+            --primary: #C8102E;
             --secondary: #FEE2E2;
             --dark: #1E293B;
             --accent: #FCA5A5;
         }
         body { background: #F8FAFC; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
-        .sidebar { background: white; border-right: 1px solid #E2E8F0; min-height: 100vh; padding: 2rem 1rem; }
-        .nav-link { color: #64748B; border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 0.5rem; transition: 0.3s; font-weight: 500; }
-        .nav-link:hover, .nav-link.active { background: var(--secondary); color: var(--primary); }
-        .nav-link i { margin-right: 0.8rem; }
+        .sidebar { min-height: 100vh; padding: 2rem 1rem; }
         .dashboard-content { padding: 2rem; }
         .stat-card { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; transition: 0.3s; }
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
@@ -33,26 +30,12 @@
     </style>
 </head>
 <body>
-    {% include 'navbar.html' %}
+    {% include 'header.html' %}
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-lg-2 sidebar d-none d-lg-block">
-                <div class="d-flex align-items-center gap-2 mb-5 px-3">
-                    <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-heart text-white small"></i>
-                    </div>
-                    <span class="fw-bold fs-5">BloodConnect</span>
-                </div>
-                <nav class="nav flex-column">
-                    <a href="{% url 'table_de_bord' %}" class="nav-link"><i class="fas fa-chart-line"></i> Tableau de bord</a>
-                    <a href="{% url 'admin_dashboard' %}" class="nav-link active"><i class="fas fa-tachometer-alt"></i> Dashboard Admin</a>
-                    <a href="{% url 'Demandes_parV' ville='toutes' %}" class="nav-link"><i class="fas fa-map-marker-alt"></i> Demandes par ville</a>
-                    <a href="{% url 'csv_donneurs' %}" class="nav-link"><i class="fas fa-file-csv"></i> Export CSV</a>
-                    <a href="{% url 'profile' %}" class="nav-link"><i class="fas fa-user-edit"></i> Mon Profil</a>
-                    <hr class="my-4 text-muted">
-                    <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
-                </nav>
+            <div class="col-lg-2 sidebar d-none d-lg-block p-0">
+                {% include 'core/sidebare_admin.html' %}
             </div>
 
             <!-- Main Content -->
@@ -77,161 +60,108 @@
                     {% endif %}
                     
                     <div class="row g-4 mb-5">
-                        <!-- DASHBOARD ADMIN -->
-                        <div class="col-md-4">
-                            <a href="{% url 'table_de_bord' %}" class="text-decoration-none">
-                                <div class="stat-card">
-                                    <div class="stat-icon" style="background: #FEE2E2; color: #DC2626;">
-                                        <i class="fas fa-chart-line"></i>
-                                    </div>
-                                    <span class="text-muted small fw-medium">Tableau de bord</span>
-                                    <h4 class="fw-bold mt-1">Admin</h4>
-                                    <p class="text-muted small mb-0">Gestion globale de la plateforme</p>
+                        <!-- TOTAL DONNEURS -->
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: #DCFCE7; color: #166534;">
+                                    <i class="fas fa-users"></i>
                                 </div>
-                            </a>
+                                <span class="text-muted small fw-medium">Donneurs</span>
+                                <h3 class="fw-bold mt-1">{{ total_donneurs }}</h3>
+                                <p class="text-muted small mb-0">Total inscrits</p>
+                            </div>
                         </div>
 
-<<<<<<< HEAD
-    <!-- TOTAL DONNEURS -->
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: #DCFCE7; color: #166534;">
-                <i class="fas fa-users"></i>
-            </div>
-            <span class="text-muted small fw-medium">Donneurs</span>
-            <h3 class="fw-bold mt-1">{{ total_donneurs }}</h3>
-            <p class="text-muted small mb-0">Total inscrits</p>
-        </div>
-    </div>
+                        <!-- TOTAL DONS -->
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: #FEE2E2; color: #C8102E;">
+                                    <i class="fas fa-hand-holding-heart"></i>
+                                </div>
+                                <span class="text-muted small fw-medium">Dons</span>
+                                <h3 class="fw-bold mt-1">{{ total_dons }}</h3>
+                                <p class="text-muted small mb-0">Total enregistrés</p>
+                            </div>
+                        </div>
 
-    <!-- TOTAL DONS -->
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: #FEE2E2; color: #DC2626;">
-                <i class="fas fa-hand-holding-heart"></i>
-            </div>
-            <span class="text-muted small fw-medium">Dons</span>
-            <h3 class="fw-bold mt-1">{{ total_dons }}</h3>
-            <p class="text-muted small mb-0">Total enregistrés</p>
-        </div>
-    </div>
-
-    <!-- VALIDATION HOPITAUX -->
-    <div class="col-md-3">
-        <a href="{% url 'valider_hopitaux' %}" class="text-decoration-none">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #FEF3C7; color: #D97706;">
-                    <i class="fas fa-hospital-user"></i>
-                </div>
-                <span class="text-muted small fw-medium">Validations</span>
-                <h3 class="fw-bold mt-1">Hôpitaux</h3>
-                <p class="text-muted small mb-0">Gérer les accès</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- DEMANDES PAR VILLE -->
-    <div class="col-md-3">
-        <a href="{% url 'carte_demandes' %}" class="text-decoration-none">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #E0F2FE; color: #0369A1;">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <span class="text-muted small fw-medium">Demandes</span>
-                <h3 class="fw-bold mt-1">Par Ville</h3>
-                <p class="text-muted small mb-0">{{ total_demandes_actives }} actives</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- EXPORT CSV -->
-    <div class="col-md-3">
-        <a href="{% url 'exporter_donneurs_csv' %}" class="text-decoration-none">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #F1F5F9; color: #475569;">
-                    <i class="fas fa-file-csv"></i>
-                </div>
-                <span class="text-muted small fw-medium">Donneurs</span>
-                <h3 class="fw-bold mt-1">Export CSV</h3>
-                <p class="text-muted small mb-0">Télécharger la liste</p>
-            </div>
-        </a>
-    </div>
-</div>
-
-<div class="row g-4">
-    <!-- STATS GROUPES SANGUINS -->
-    <div class="col-lg-12">
-        <div class="stat-card">
-            <h5 class="fw-bold mb-4"><i class="fas fa-tint text-danger me-2"></i>Demandes actives par groupe sanguin</h5>
-            <div class="row text-center">
-                {% for stat in stats_groupes %}
-                <div class="col-md-1 col-sm-3 col-6 mb-3">
-                    <div class="p-3 border rounded-4 bg-light">
-                        <div class="fw-bold text-danger fs-5">{{ stat.groupe_sanguin }}</div>
-                        <div class="small text-muted">{{ stat.total }}</div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="col-12">
-                    <p class="text-muted">Aucune demande active pour le moment.</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-</div>
-</body>
-=======
                         <!-- VALIDATION HOPITAUX -->
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <a href="{% url 'valider_hopitaux' %}" class="text-decoration-none">
                                 <div class="stat-card">
                                     <div class="stat-icon" style="background: #FEF3C7; color: #D97706;">
                                         <i class="fas fa-hospital-user"></i>
                                     </div>
                                     <span class="text-muted small fw-medium">Validations</span>
-                                    <h3 class="fw-bold mt-1">{{ total_hopitaux_en_attente }}</h3>
-                                    <p class="text-muted small mb-0">Comptes hospitaliers en attente</p>
+                                    <h3 class="fw-bold mt-1">{{ total_hopitaux }}</h3>
+                                    <p class="text-muted small mb-0">Gérer les accès</p>
                                 </div>
                             </a>
                         </div>
 
                         <!-- DEMANDES PAR VILLE -->
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <a href="{% url 'Demandes_parV' ville='toutes' %}" class="text-decoration-none">
                                 <div class="stat-card">
                                     <div class="stat-icon" style="background: #E0F2FE; color: #0369A1;">
                                         <i class="fas fa-map-marker-alt"></i>
                                     </div>
-                                    <span class="text-muted small fw-medium">Demandes urgentes</span>
+                                    <span class="text-muted small fw-medium">Demandes</span>
                                     <h3 class="fw-bold mt-1">{{ total_demandes_actives }}</h3>
-                                    <p class="text-muted small mb-0">Répartition par ville</p>
+                                    <p class="text-muted small mb-0">Actives par ville</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-5">
+                        <!-- TABLEAU DE BORD STATS -->
+                        <div class="col-md-4">
+                            <a href="{% url 'table_de_bord' %}" class="text-decoration-none">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background: #F1F5F9; color: #475569;">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <span class="text-muted small fw-medium">Statistiques</span>
+                                    <h4 class="fw-bold mt-1">Tableau de bord</h4>
+                                    <p class="text-muted small mb-0">Analyses détaillées</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- EXPORT CSV -->
+                        <div class="col-md-4">
+                            <a href="{% url 'exporter_donneurs_csv' %}" class="text-decoration-none">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background: #F1F5F9; color: #475569;">
+                                        <i class="fas fa-file-csv"></i>
+                                    </div>
+                                    <span class="text-muted small fw-medium">Donneurs</span>
+                                    <h3 class="fw-bold mt-1">Export CSV</h3>
+                                    <p class="text-muted small mb-0">Télécharger la liste</p>
                                 </div>
                             </a>
                         </div>
                     </div>
 
                     <div class="row g-4">
-                        <!-- EXPORT CSV -->
-                        <div class="col-md-4">
-                            <a href="{% url 'csv_donneurs' %}" class="text-decoration-none">
-                                <div class="stat-card text-center">
-                                    <div class="stat-icon mx-auto" style="background: #E0F2FE; color: #0369A1;">
-                                        <i class="fas fa-file-csv"></i>
+                        <!-- STATS GROUPES SANGUINS -->
+                        <div class="col-lg-12">
+                            <div class="stat-card">
+                                <h5 class="fw-bold mb-4"><i class="fas fa-tint text-danger me-2"></i>Demandes actives par groupe sanguin</h5>
+                                <div class="row text-center">
+                                    {% for stat in stats_groupes %}
+                                    <div class="col-md-1 col-sm-3 col-6 mb-3">
+                                        <div class="p-3 border rounded-4 bg-light">
+                                            <div class="fw-bold text-danger fs-5">{{ stat.groupe_sanguin }}</div>
+                                            <div class="small text-muted">{{ stat.total }}</div>
+                                        </div>
                                     </div>
-                                    <span class="text-muted small fw-medium">Export Donneurs</span>
-                                    <h5 class="fw-bold mt-2">CSV</h5>
+                                    {% empty %}
+                                    <div class="col-12">
+                                        <p class="text-muted">Aucune demande active pour le moment.</p>
+                                    </div>
+                                    {% endfor %}
                                 </div>
-                            </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
->>>>>>> 7172e4f0fb08499b936925eecfd3cd210c234abe

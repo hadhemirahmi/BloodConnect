@@ -4,123 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
     <title>Demandes par Ville | BloodConnect</title>
-=======
-    <title>Demandes par ville | BloodConnect</title>
->>>>>>> 7172e4f0fb08499b936925eecfd3cd210c234abe
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
-            --primary: #DC2626;
+            --primary: #C8102E;
             --secondary: #FEE2E2;
             --dark: #1E293B;
             --accent: #FCA5A5;
         }
         body { background: #F8FAFC; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
-<<<<<<< HEAD
-        .city-card { background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; margin-bottom: 2rem; }
-        .city-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F1F5F9; padding-bottom: 1rem; margin-bottom: 1.5rem; }
-        .request-item { background: #F8FAFC; border-radius: 15px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); }
-        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
-=======
-        .sidebar { background: white; border-right: 1px solid #E2E8F0; min-height: 100vh; padding: 2rem 1rem; }
-        .nav-link { color: #64748B; border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 0.5rem; transition: 0.3s; font-weight: 500; }
-        .nav-link:hover, .nav-link.active { background: var(--secondary); color: var(--primary); }
-        .nav-link i { margin-right: 0.8rem; }
+        
+        /* Sidebar & Layout */
+        .sidebar { min-height: 100vh; padding: 2rem 1rem; }
         .dashboard-content { padding: 2rem; }
+        
+        /* Glass Header */
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+        
+        /* Cards */
         .stat-card { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; transition: 0.3s; }
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
         .stat-icon { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem; }
-        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+        
+        .city-card { background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; margin-bottom: 2rem; }
+        .city-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F1F5F9; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        
+        /* Tables & Items */
         .table-custom { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; }
         .table-custom th { background: #F8FAFC; border-bottom: 2px solid #E2E8F0; color: var(--dark); font-weight: 600; padding: 1rem; }
         .table-custom td { vertical-align: middle; border-bottom: 1px solid #F1F5F9; padding: 1rem; }
-        .badge-blood { background: #FEE2E2; color: #DC2626; padding: 0.35rem 0.85rem; border-radius: 50px; font-weight: 700; font-size: 0.8rem; }
+        
+        .request-item { background: #F8FAFC; border-radius: 15px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); }
+        
+        /* Badges */
+        .badge-blood { background: #FEE2E2; color: #C8102E; padding: 0.35rem 0.85rem; border-radius: 50px; font-weight: 700; font-size: 0.8rem; }
         .badge-quantite { background: #F0FDF4; color: #166534; padding: 0.35rem 0.85rem; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
         .badge-delai { background: #FEF9C3; color: #854D0E; padding: 0.35rem 0.85rem; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
-        .search-box { background: #f8f9fa; padding: 1rem; border-radius: 15px; margin-bottom: 1.5rem; border: 1px solid #E2E8F0; }
-        .btn-search { background-color: var(--primary); border: none; color: white; border-radius: 12px; padding: 0.6rem 1.2rem; font-weight: 500; }
-        .btn-search:hover { background-color: #b91c1c; }
+        
+        /* Controls */
+        .search-box { background: #f8f9fa; padding: 1.5rem; border-radius: 20px; margin-bottom: 2rem; border: 1px solid #E2E8F0; }
+        .btn-search { background-color: var(--primary); border: none; color: white; border-radius: 12px; padding: 0.6rem 1.2rem; font-weight: 500; transition: 0.3s; }
+        .btn-search:hover { background-color: #a60d26; transform: translateY(-2px); }
+        
         .btn-back { background: white; border: 1px solid #E2E8F0; color: #64748B; border-radius: 12px; padding: 0.6rem 1.2rem; transition: 0.3s; text-decoration: none; display: inline-block; }
         .btn-back:hover { background: var(--secondary); color: var(--primary); border-color: var(--primary); }
+        
         .btn-outline-secondary { background: white; border: 1px solid #E2E8F0; color: #64748B; border-radius: 12px; padding: 0.6rem 1.2rem; transition: 0.3s; text-decoration: none; display: inline-block; }
         .btn-outline-secondary:hover { background: var(--secondary); color: var(--primary); border-color: var(--primary); }
->>>>>>> 7172e4f0fb08499b936925eecfd3cd210c234abe
     </style>
 </head>
 <body>
-    {% include 'navbar.html' %}
-<<<<<<< HEAD
+    {% include 'header.html' %}
     
-    <div class="glass-header d-flex align-items-center gap-3">
-        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary btn-sm rounded-circle">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-        <h5 class="fw-bold m-0">Répartition des Demandes par Ville</h5>
-    </div>
-
-    <div class="container py-5">
-        {% if villes_data %}
-            <div class="row">
-                {% for item in villes_data %}
-                <div class="col-lg-6">
-                    <div class="city-card">
-                        <div class="city-header">
-                            <h4 class="fw-bold m-0"><i class="fas fa-city text-primary me-2"></i>{{ item.ville }}</h4>
-                            <span class="badge bg-danger rounded-pill">{{ item.total }} demande(s)</span>
-                        </div>
-                        <div class="requests-list">
-                            {% for demande in item.demandes %}
-                            <div class="request-item">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div class="fw-bold text-danger">{{ demande.groupe_sanguin }}</div>
-                                    <div class="small text-muted"><i class="far fa-clock me-1"></i>{{ demande.delai|date:"d M Y" }}</div>
-                                </div>
-                                <div class="small fw-medium mb-1">{{ demande.hopital.nom }}</div>
-                                <div class="small text-muted">{{ demande.quantite }} poches nécessaires</div>
-                                {% if demande.description %}
-                                <div class="mt-2 p-2 bg-white rounded small border-start border-3">{{ demande.description }}</div>
-                                {% endif %}
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="text-center py-5">
-                <div class="display-1 text-muted mb-4"><i class="fas fa-map-marked-alt"></i></div>
-                <h3>Aucune demande active</h3>
-                <p class="text-muted">Il n'y a actuellement aucune demande urgente de sang dans aucune ville.</p>
-                <a href="{% url 'admin_dashboard' %}" class="btn btn-primary rounded-pill px-4">Retour au Dashboard</a>
-            </div>
-        {% endif %}
-    </div>
-</body>
-</html>
-=======
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-lg-2 sidebar d-none d-lg-block">
-                <div class="d-flex align-items-center gap-2 mb-5 px-3">
-                    <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-heart text-white small"></i>
-                    </div>
-                    <span class="fw-bold fs-5">BloodConnect</span>
-                </div>
-                <nav class="nav flex-column">
-                    <a href="{% url 'table_de_bord' %}" class="nav-link"><i class="fas fa-chart-line"></i> Tableau de bord</a>
-                    <a href="{% url 'admin_dashboard' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard Admin</a>
-                    <a href="{% url 'Demandes_parV' ville='toutes' %}" class="nav-link active"><i class="fas fa-map-marker-alt"></i> Demandes par ville</a>
-                    <a href="{% url 'csv_donneurs' %}" class="nav-link"><i class="fas fa-file-csv"></i> Export CSV</a>
-                    <a href="{% url 'profile' %}" class="nav-link"><i class="fas fa-user-edit"></i> Mon Profil</a>
-                    <hr class="my-4 text-muted">
-                    <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
-                </nav>
+            <div class="col-lg-2 sidebar d-none d-lg-block p-0">
+                {% include 'core/sidebare_admin.html' %}
             </div>
 
             <!-- Main Content -->
@@ -131,156 +73,130 @@
                         Demandes urgentes par ville
                     </h5>
                     <div class="d-flex align-items-center gap-3">
-                        <div class="dropdown">
-                            <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DC2626&color=fff" class="rounded-circle" width="40" alt="Avatar">
-                        </div>
+                        <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=C8102E&color=fff" class="rounded-circle" width="40" alt="Avatar">
                     </div>
                 </div>
 
                 <div class="dashboard-content">
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
 
-                    <!-- Bouton retour -->
-                    <div class="mb-4">
+                    <!-- Navigation & Search -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
                         <a href="{% url 'admin_dashboard' %}" class="btn-back">
                             <i class="fas fa-arrow-left me-2"></i> Retour au Dashboard
                         </a>
+                        {% if not villes_data %}
+                        <a href="{% url 'Demandes_parV' ville='toutes' %}" class="btn-outline-secondary">
+                            <i class="fas fa-globe me-2"></i> Voir toutes les villes
+                        </a>
+                        {% endif %}
                     </div>
 
-                    <!-- Zone de recherche -->
+                    <!-- Search Box -->
                     <div class="search-box">
-                        <form method="GET" action="/core/admin/demandes/ville/recherche/" class="row g-3">
-                            <div class="col-md-8">
-                                <label for="ville_recherche" class="form-label fw-semibold">
-                                    <i class="fas fa-search text-danger me-1"></i> Rechercher par ville :
-                                </label>
-                                <input type="text" 
-                                       class="form-control form-control-lg" 
-                                       id="ville_recherche" 
-                                       name="ville" 
-                                       placeholder="Ex: Paris, sfax, Lyon..."
-                                       value="{{ ville_affichee|default:'' }}">
+                        <form method="GET" action="{% url 'Demandes_parV' ville='toutes' %}" class="row g-3">
+                            <div class="col-md-9">
+                                <label for="ville_recherche" class="form-label fw-semibold">Rechercher une ville spécifique :</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 rounded-start-4"><i class="fas fa-search text-muted"></i></span>
+                                    <input type="text" class="form-control form-control-lg border-start-0 rounded-end-4" id="ville_recherche" name="ville" placeholder="Ex: Paris, Tunis, Lyon..." value="{{ ville_affichee|default:'' }}">
+                                </div>
                             </div>
-                            <div class="col-md-4 d-flex align-items-end">
-                                <button type="submit" class="btn btn-search w-100">
-                                    <i class="fas fa-search me-2"></i> Rechercher
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-search w-100 py-2">
+                                    Rechercher
                                 </button>
                             </div>
                         </form>
                     </div>
 
-                    <!-- Statistiques -->
-                    <div class="row g-4 mb-4">
-                        <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: #E0F2FE; color: #0369A1;">
-                                    <i class="fas fa-map-pin"></i>
-                                </div>
-                                <span class="text-muted small fw-medium">Ville recherchée</span>
-                                <h3 class="fw-bold mt-1">{{ ville|default:"Toutes" }}</h3>
-                                <p class="text-muted small mb-0">Localisation des demandes</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: #FEE2E2; color: #DC2626;">
-                                    <i class="fas fa-tint"></i>
-                                </div>
-                                <span class="text-muted small fw-medium">Total demandes</span>
-                                <h3 class="fw-bold mt-1">{{ demandes|length }}</h3>
-                                <p class="text-muted small mb-0">Demande(s) urgente(s)</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: #FEF3C7; color: #D97706;">
-                                    <i class="fas fa-box"></i>
-                                </div>
-                                <span class="text-muted small fw-medium">Total poches</span>
-                                <h3 class="fw-bold mt-1">
-                                    {% with total_poches=0 %}
-                                        {% for d in demandes %}
-                                            {% if forloop.last %}
-                                                {{ total_poches|add:d.quantite }}
+                    {% if villes_data %}
+                        <!-- Overview Mode (All Cities) -->
+                        <div class="row">
+                            {% for item in villes_data %}
+                            <div class="col-lg-6 mb-4">
+                                <div class="city-card h-100">
+                                    <div class="city-header">
+                                        <h4 class="fw-bold m-0"><i class="fas fa-city text-primary me-2"></i>{{ item.ville }}</h4>
+                                        <span class="badge bg-danger rounded-pill">{{ item.total }} demande(s)</span>
+                                    </div>
+                                    <div class="requests-list">
+                                        {% for demande in item.demandes %}
+                                        <div class="request-item">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div class="badge-blood">{{ demande.groupe_sanguin }}</div>
+                                                <div class="small text-muted"><i class="far fa-clock me-1"></i>{{ demande.delai|date:"d M Y" }}</div>
+                                            </div>
+                                            <div class="small fw-bold mb-1">{{ demande.hopital.nom }}</div>
+                                            <div class="small text-muted mb-2">{{ demande.quantite }} poches nécessaires</div>
+                                            {% if demande.description %}
+                                            <div class="mt-2 p-2 bg-white rounded small border-start border-3 border-danger shadow-sm">{{ demande.description }}</div>
                                             {% endif %}
+                                        </div>
                                         {% endfor %}
-                                    {% endwith %}
-                                    {% if demandes %}
-                                        {% for d in demandes %}{% if forloop.first %}{{ d.quantite }}{% else %}{% if not forloop.first %}{% endif %}{% endif %}{% endfor %}
-                                    {% else %}0{% endif %}
-                                </h3>
-                                <p class="text-muted small mb-0">Poches nécessaires</p>
+                                    </div>
+                                    <div class="mt-3">
+                                        <a href="{% url 'Demandes_parV' ville=item.ville %}" class="btn btn-link text-danger p-0 text-decoration-none fw-semibold">
+                                            Voir les détails <i class="fas fa-chevron-right ms-1 small"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% elif demandes %}
+                        <!-- List Mode (Specific City) -->
+                        <div class="stat-card mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="fw-bold m-0">
+                                    <i class="fas fa-list text-danger me-2"></i>
+                                    Demandes pour : {{ ville_affichee|default:ville }}
+                                </h4>
+                                <span class="badge bg-danger rounded-pill px-3 py-2">{{ demandes|length }} demande(s)</span>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>Hôpital</th>
+                                            <th>Groupe sanguin</th>
+                                            <th>Quantité</th>
+                                            <th>Délai</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for d in demandes %}
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold">{{ d.hopital.nom }}</div>
+                                                <div class="small text-muted">{{ d.hopital.ville }}</div>
+                                            </td>
+                                            <td><span class="badge-blood">{{ d.groupe_sanguin }}</span></td>
+                                            <td><span class="badge-quantite">{{ d.quantite }} poche(s)</span></td>
+                                            <td><span class="badge-delai">{{ d.delai|date:"d/m/Y H:i" }}</span></td>
+                                            <td>{{ d.description|default:"-"|truncatechars:50 }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Tableau des demandes -->
-                    <div class="stat-card">
-                        <h4 class="fw-bold mb-3">
-                            <i class="fas fa-list text-danger me-2"></i>
-                            Liste des demandes urgentes
-                        </h4>
-                        
-                        {% if demandes %}
-                        <div class="table-responsive">
-                            <table class="table table-custom">
-                                <thead>
-                                    <tr>
-                                        <th><i class="fas fa-building me-2"></i>Hôpital</th>
-                                        <th><i class="fas fa-tint me-2"></i>Groupe sanguin</th>
-                                        <th><i class="fas fa-box me-2"></i>Quantité</th>
-                                        <th><i class="fas fa-clock me-2"></i>Délai</th>
-                                        <th><i class="fas fa-align-left me-2"></i>Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for d in demandes %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ d.hopital.nom }}</strong><br>
-                                            <small class="text-muted">{{ d.hopital.ville }}</small>
-                                        </br>
-                                        <td><span class="badge-blood">{{ d.groupe_sanguin }}</span></td>
-                                        <td><span class="badge-quantite">{{ d.quantite }} poche(s)</span></br>
-                                        <td>
-                                            {% if d.delai %}
-                                            <span class="badge-delai">{{ d.delai|date:"d/m/Y H:i" }}</span>
-                                            {% else %}
-                                            <span class="badge-delai">Urgent</span>
-                                            {% endif %}
-                                        </br>
-                                        <td>{{ d.description|default:"-"|truncatechars:50 }}</br>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                             </table>
+                    {% else %}
+                        <!-- No Data -->
+                        <div class="text-center py-5">
+                            <div class="display-1 text-muted mb-4"><i class="fas fa-map-marked-alt"></i></div>
+                            <h3>Aucune demande trouvée</h3>
+                            <p class="text-muted">Il n'y a actuellement aucune demande urgente répondant à vos critères.</p>
+                            <a href="{% url 'Demandes_parV' ville='toutes' %}" class="btn btn-primary rounded-pill px-4">Voir tout</a>
                         </div>
-
-                        <div class="alert alert-info mt-4 rounded-4">
-                            <i class="fas fa-chart-simple me-2"></i>
-                            <strong>Résumé :</strong> {{ demandes|length }} demande(s) urgente(s) trouvée(s)
-                        </div>
-                        {% else %}
-                        <div class="alert alert-warning text-center rounded-4">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Aucune demande urgente trouvée pour <strong>{{ ville|default:"cette ville" }}</strong>
-                        </div>
-                        {% endif %}
-                        
-                        <!-- Lien pour voir toutes les demandes -->
-                        <div class="mt-3 text-center">
-                            <a href="{% url 'Demandes_parV' ville='toutes' %}" class="btn-outline-secondary">
-                                <i class="fas fa-globe me-2"></i> Voir toutes les demandes
-                            </a>
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -289,4 +205,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
->>>>>>> 7172e4f0fb08499b936925eecfd3cd210c234abe

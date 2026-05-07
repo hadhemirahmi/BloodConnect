@@ -9,16 +9,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
-            --primary: #DC2626;
+            --primary: #C8102E;
             --secondary: #FEE2E2;
             --dark: #1E293B;
             --accent: #FCA5A5;
         }
         body { background: #F8FAFC; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
-        .sidebar { background: white; border-right: 1px solid #E2E8F0; min-height: 100vh; padding: 2rem 1rem; }
-        .nav-link { color: #64748B; border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 0.5rem; transition: 0.3s; font-weight: 500; }
-        .nav-link:hover, .nav-link.active { background: var(--secondary); color: var(--primary); }
-        .nav-link i { margin-right: 0.8rem; }
         .dashboard-content { padding: 2rem; }
         .stat-card { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; }
         .stat-icon { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem; }
@@ -26,29 +22,16 @@
         .badge-waiting { background: #FEF9C3; color: #854D0E; padding: 0.5rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
         .urgent-call { background: white; border-left: 4px solid var(--primary); border-radius: 15px; margin-bottom: 1rem; transition: 0.3s; }
         .urgent-call:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); sticky-top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
     </style>
 </head>
 <body>
-    {% include 'navbar.html' %}
+    {% include 'header.html' %}
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-lg-2 sidebar d-none d-lg-block">
-                <div class="d-flex align-items-center gap-2 mb-5 px-3">
-                    <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-heart text-white small"></i>
-                    </div>
-                    <span class="fw-bold fs-5">BloodConnect</span>
-                </div>
-                <nav class="nav flex-column">
-                    <a href="{% url 'dashboard_donneur' %}" class="nav-link active"><i class="fas fa-th-large"></i> Dashboard</a>
-                    <a href="{% url 'mes_campagnes' %}" class="nav-link"><i class="fas fa-calendar-alt"></i> Mes Campagnes</a>
-                    <a href="{% url 'enregistrer_don' %}" class="nav-link"><i class="fas fa-plus-circle"></i> Enregistrer Don</a>
-                    <a href="{% url 'profile' %}" class="nav-link"><i class="fas fa-user-edit"></i> Mon Profil</a>
-                    <hr class="my-4 text-muted">
-                    <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
-                </nav>
+            <div class="col-lg-2 p-0 d-none d-lg-block">
+                {% include 'dons/sidebar_donneur.html' %}
             </div>
 
             <!-- Main Content -->
@@ -75,45 +58,55 @@
 
                     <div class="row g-4 mb-5">
                         <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: #E0F2FE; color: #0369A1;">
-                                    <i class="fas fa-tint"></i>
+                            <div class="stat-card" style="border-bottom: 4px solid #0369A1;">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="stat-icon" style="background: #E0F2FE; color: #0369A1;">
+                                        <i class="fas fa-tint"></i>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill px-3">{{ donneur.groupe_sanguin }}</span>
                                 </div>
-                                <span class="text-muted small fw-medium">Groupe Sanguin</span>
+                                <span class="text-muted small fw-medium">Mon Groupe</span>
                                 <h3 class="fw-bold mt-1">{{ donneur.groupe_sanguin }}</h3>
                                 <p class="text-muted small mb-0">Donneur Univerel (si O-)</p>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: #FFF7ED; color: #9A3412;">
-                                    <i class="fas fa-history"></i>
+                            <div class="stat-card" style="border-bottom: 4px solid var(--primary);">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="stat-icon" style="background: var(--secondary); color: var(--primary);">
+                                        <i class="fas fa-history"></i>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="fs-4 fw-bold text-danger">{{ donneur.dons.count }}</span>
+                                        <small class="d-block text-muted" style="font-size: 0.7rem;">Dons au total</small>
+                                    </div>
                                 </div>
                                 <span class="text-muted small fw-medium">Dernier Don</span>
-                                <h3 class="fw-bold mt-1">{% if donneur.derniere_don %}{{ donneur.derniere_don|date:"d M Y" }}{% else %}Jamais{% endif %}</h3>
-                                <p class="text-muted small mb-0">{{ donneur.dons.count }} dons effectués</p>
+                                <h4 class="fw-bold mt-1">{% if donneur.derniere_don %}{{ donneur.derniere_don|date:"d M Y" }}{% else %}Aucun{% endif %}</h4>
+                                <p class="text-muted small mb-0">Merci pour votre générosité !</p>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: #F0FDF4; color: #166534;">
-                                    <i class="fas fa-calendar-check"></i>
-                                </div>
-                                <span class="text-muted small fw-medium">Éligibilité</span>
-                                <h3 class="fw-bold mt-1">
+                            <div class="stat-card" style="border-bottom: 4px solid #166534;">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="stat-icon" style="background: #F0FDF4; color: #166534;">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
                                     {% if donneur.est_eligible %}
-                                        <span class="text-success">Disponible</span>
+                                        <span class="badge bg-success rounded-pill px-3">Éligible</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark rounded-pill px-3">En attente</span>
+                                    {% endif %}
+                                </div>
+                                <span class="text-muted small fw-medium">Prochaine Éligibilité</span>
+                                <h4 class="fw-bold mt-1">
+                                    {% if donneur.est_eligible %}
+                                        Aujourd'hui
                                     {% else %}
                                         {{ donneur.prochaine_date_don|date:"d M Y" }}
                                     {% endif %}
-                                </h3>
-                                <div>
-                                    {% if donneur.est_eligible %}
-                                        <span class="badge-eligibility">Vous pouvez donner aujourd'hui !</span>
-                                    {% else %}
-                                        <span class="badge-waiting">En attente de récupération</span>
-                                    {% endif %}
-                                </div>
+                                </h4>
+                                <p class="text-muted small mb-0">Basé sur le délai légal</p>
                             </div>
                         </div>
                     </div>
@@ -191,24 +184,7 @@
                                 </div>
                             </div>
 
-                            <h5 class="fw-bold mb-4 mt-5">Historique des Dons</h5>
-                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                                <ul class="list-group list-group-flush small">
-                                    {% for don in historique_dons %}
-                                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                            <div>
-                                                <span class="fw-bold">{{ don.hopital.nom }}</span><br>
-                                                <span class="text-muted">{{ don.date_don|date:"d F Y" }}</span>
-                                            </div>
-                                            <span class="badge {% if don.valide %}bg-success{% else %}bg-warning text-dark{% endif %}">
-                                                {% if don.valide %}Validé{% else %}En attente{% endif %}
-                                            </span>
-                                        </li>
-                                    {% empty %}
-                                        <li class="list-group-item text-center py-4 text-muted italic">Aucun don enregistré.</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

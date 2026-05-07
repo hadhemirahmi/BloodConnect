@@ -4,36 +4,82 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enregistrer un Don | BloodConnect</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        body { background: #F8FAFC; }
-        .card { border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        :root {
+            --primary: #C8102E;
+            --secondary: #FEE2E2;
+            --dark: #1E293B;
+            --accent: #FCA5A5;
+        }
+        body { background: #F8FAFC; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
+        .dashboard-content { padding: 2rem; }
+        .card-custom {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid #F1F5F9;
+        }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+        .btn-red { background: var(--primary); color: white; border-radius: 12px; padding: 0.8rem; font-weight: 600; border: none; transition: 0.3s; }
+        .btn-red:hover { background: #a60d26; transform: scale(1.01); }
     </style>
 </head>
-<body class="d-flex align-items-center min-vh-100">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card p-4">
-                    <div class="text-center mb-4">
-                        <div class="mb-3 text-danger fs-1"><i class="fas fa-heartbeat"></i></div>
-                        <h4 class="fw-bold">Enregistrer un don</h4>
-                        <p class="text-muted small">Indiquez les détails de votre dernier don effectué</p>
-                    </div>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 p-0 d-none d-lg-block">
+                {% include 'dons/sidebar_donneur.html' %}
+            </div>
 
-                    <form method="post">
-                        {% csrf_token %}
-                        {% bootstrap_form form %}
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-danger rounded-pill py-2 fw-bold">Valider l'enregistrement</button>
-                            <a href="{% url 'dashboard_donneur' %}" class="btn btn-link text-muted small text-decoration-none">Annuler</a>
+            <!-- Main Content -->
+            <div class="col-lg-10 p-0">
+                <div class="glass-header d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold m-0">Déclarer un don</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DC2626&color=fff" class="rounded-circle" width="40" alt="Avatar">
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="row justify-content-center">
+                        <div class="col-md-7 col-lg-6">
+                            <div class="card-custom">
+                                <div class="text-center mb-5">
+                                    <div style="width: 60px; height: 60px; background: var(--secondary); color: var(--primary); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                                        <i class="fas fa-heartbeat fs-3"></i>
+                                    </div>
+                                    <h3 class="fw-bold m-0">Enregistrer un don</h3>
+                                    <p class="text-muted">Merci pour votre générosité ! Ces informations nous aident à suivre votre éligibilité.</p>
+                                </div>
+
+                                <form method="post">
+                                    {% csrf_token %}
+                                    {% bootstrap_form form %}
+                                    <div class="d-grid gap-3 mt-5">
+                                        <button type="submit" class="btn-red">
+                                            <i class="fas fa-save me-2"></i> Valider l'enregistrement
+                                        </button>
+                                        <a href="{% url 'dashboard_donneur' %}" class="btn btn-link text-muted text-decoration-none small text-center">
+                                            Annuler
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

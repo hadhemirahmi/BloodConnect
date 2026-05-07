@@ -3,40 +3,97 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mes Campagnes | BloodConnect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Inscriptions | BloodConnect</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #C8102E;
+            --secondary: #FEE2E2;
+            --dark: #1E293B;
+            --accent: #FCA5A5;
+        }
+        body { background: #F8FAFC; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
+        .dashboard-content { padding: 2rem; }
+        .card-custom {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid #F1F5F9;
+            transition: 0.3s;
+        }
+        .card-custom:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+    </style>
 </head>
-<body class="bg-light">
-    <div class="container py-5">
-        <h3 class="fw-bold mb-4">Mes inscriptions aux campagnes</h3>
-        <div class="row g-4">
-            {% for ins in inscriptions %}
-                <div class="col-md-6">
-                    <div class="card border-0 shadow-sm rounded-4 p-4">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h5 class="fw-bold mb-1">{{ ins.campagne.nom }}</h5>
-                                <p class="text-muted small mb-3"><i class="fas fa-hospital"></i> {{ ins.campagne.hopital.nom }}</p>
-                                <div class="d-flex gap-3 mb-3">
-                                    <span class="small"><i class="fas fa-calendar"></i> {{ ins.campagne.date|date:"d/m/Y" }}</span>
-                                    <span class="small fw-bold text-danger"><i class="fas fa-clock"></i> {{ ins.creneau_horaire }}</span>
-                                </div>
-                                <p class="text-muted small"><i class="fas fa-map-marker-alt"></i> {{ ins.campagne.lieu }}</p>
-                            </div>
-                            <span class="badge {% if ins.present %}bg-success{% else %}bg-info{% endif %}">
-                                {% if ins.present %}Présent{% else %}Inscrit{% endif %}
-                            </span>
-                        </div>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 p-0 d-none d-lg-block">
+                {% include 'dons/sidebar_donneur.html' %}
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-10 p-0">
+                <div class="glass-header d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold m-0">Mes Participations</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DC2626&color=fff" class="rounded-circle" width="40" alt="Avatar">
                     </div>
                 </div>
-            {% empty %}
-                <div class="text-center py-5">
-                    <p class="text-muted">Vous n'avez aucune inscription programmée.</p>
-                    <a href="{% url 'dashboard_donneur' %}" class="btn btn-primary-red">Voir les opportunités</a>
+
+                <div class="dashboard-content">
+                    <h3 class="fw-bold mb-5">Mes inscriptions aux collectes</h3>
+                    
+                    <div class="row g-4">
+                        {% for ins in inscriptions %}
+                            <div class="col-md-6">
+                                <div class="card-custom">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <h5 class="fw-bold m-0">{{ ins.campagne.nom }}</h5>
+                                                {% if ins.present %}
+                                                    <span class="badge bg-success rounded-pill px-3">Confirmé</span>
+                                                {% else %}
+                                                    <span class="badge bg-info rounded-pill px-3">Inscrit</span>
+                                                {% endif %}
+                                            </div>
+                                            <p class="text-muted small mb-3"><i class="fas fa-hospital me-1"></i> {{ ins.campagne.hopital.nom }}</p>
+                                            
+                                            <div class="d-flex gap-4 mb-3">
+                                                <div class="small"><i class="fas fa-calendar-day text-danger me-1"></i> {{ ins.campagne.date|date:"d/m/Y" }}</div>
+                                                <div class="small fw-bold text-danger"><i class="fas fa-clock me-1"></i> {{ ins.creneau_horaire }}</div>
+                                            </div>
+                                            
+                                            <p class="text-muted small m-0"><i class="fas fa-map-marker-alt text-danger me-1"></i> {{ ins.campagne.lieu }}</p>
+                                        </div>
+                                        <div style="width: 50px; height: 50px; background: var(--secondary); color: var(--primary); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-bookmark"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="col-12 text-center py-5">
+                                <div class="card-custom">
+                                    <i class="fas fa-calendar-times fs-1 text-muted opacity-25 mb-3"></i>
+                                    <p class="text-muted">Vous n'avez aucune inscription programmée.</p>
+                                    <a href="{% url 'campagne_list' %}" class="btn btn-outline-danger rounded-pill px-4">Voir les opportunités</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

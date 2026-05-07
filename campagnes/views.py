@@ -7,6 +7,7 @@ from .models import Campagne, Inscription
 from django.urls import reverse_lazy
 from .forms import CampagneForm
 from core.utils import is_compatible
+from core.decorators import donor_required, hospital_required, hospital_validated_required
 
 class HospitalValidationMixin(UserPassesTestMixin):
     def test_func(self):
@@ -59,9 +60,8 @@ class CampagneDeleteView(DeleteView):
     success_url = reverse_lazy('dashboard_hopital')
 
 @login_required
+@donor_required
 def participer_campagne(request, campagne_id):
-    if request.user.role != 'donneur':
-        return redirect('index')
         
     donneur = request.user.donneur
     if not donneur.est_eligible():
@@ -135,9 +135,8 @@ def mes_campagnes(request):
         return render(request, 'campagnes/mes_campagnes_hopital.html', {'campagnes': campagnes})
 
 @login_required
+@hospital_required
 def inscriptions_campagne(request, campagne_id):
-    if request.user.role != 'hopital':
-        return redirect('index')
     
     campagne = get_object_or_404(Campagne, pk=campagne_id, hopital=request.user.hopital)
     inscriptions = campagne.inscriptions.all().select_related('donneur__user').order_by('creneau_index')
@@ -148,9 +147,8 @@ def inscriptions_campagne(request, campagne_id):
     })
 
 @login_required
+@hospital_validated_required
 def valider_presence(request, inscription_id):
-    if request.user.role != 'hopital':
-        return redirect('index')
     
     inscription = get_object_or_404(Inscription, id=inscription_id, campagne__hopital=request.user.hopital)
     inscription.present = True

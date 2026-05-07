@@ -4,7 +4,9 @@ from django.contrib.auth import login, authenticate, logout, get_user_model
 from .models import Donneur, Hopital
 from .forms import DonneurRegistrationForm, HopitalRegistrationForm
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
+from core.utils import get_compatible_groups
+from core.decorators import donor_required, hospital_required, admin_required
 
 User = get_user_model()
 def register_view(request):
@@ -68,27 +70,16 @@ def logout_view(request):
     logout(request)
     return redirect("login")
 
-from django.contrib.auth.decorators import login_required
 
 @login_required
+@donor_required
 def dashboard_donneur(request):
     from demandes.models import DemandeUrgente
     from dons.models import Don
     donneur = request.user.donneur
     
     # Logique de compatibilité sanguine (Qui peut donner à qui)
-    donneur_group = donneur.groupe_sanguin
-    compatibility_map = {
-        'O-': ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'],
-        'O+': ['O+', 'A+', 'B+', 'AB+'],
-        'A-': ['A-', 'A+', 'AB-', 'AB+'],
-        'A+': ['A+', 'AB+'],
-        'B-': ['B-', 'B+', 'AB-', 'AB+'],
-        'B+': ['B+', 'AB+'],
-        'AB-': ['AB-', 'AB+'],
-        'AB+': ['AB+'],
-    }
-    target_groups = compatibility_map.get(donneur_group, [donneur_group])
+    target_groups = get_compatible_groups(donneur.groupe_sanguin)
     
     demandes_compatibles = DemandeUrgente.objects.filter(
         groupe_sanguin__in=target_groups,
@@ -114,6 +105,7 @@ def dashboard_donneur(request):
     })
 
 @login_required
+@hospital_required
 def dashboard_hopital(request):
     if not hasattr(request.user, 'hopital'):
         messages.error(request, "Accès refusé : Ce compte n'est pas configuré comme un hôpital.")
@@ -175,7 +167,8 @@ def toggle_donor_active(request):
 def is_admin(user):
     return user.is_authenticated and user.is_staff
 
-@user_passes_test(is_admin)
+@login_required
+@admin_required
 def valider_hopitaux_page(request):
     hopitaux_en_attente = Hopital.objects.filter(valide=False).select_related('user')
     hopitaux_valides    = Hopital.objects.filter(valide=True).select_related('user')
@@ -184,7 +177,8 @@ def valider_hopitaux_page(request):
         'hopitaux_valides'   : hopitaux_valides,
     })
 
-@user_passes_test(is_admin)
+@login_required
+@admin_required
 def valider_hopital(request, hopital_id):
     hopital = get_object_or_404(Hopital, id=hopital_id)
     hopital.valide = True
@@ -194,7 +188,8 @@ def valider_hopital(request, hopital_id):
     messages.success(request, f"✅ {hopital.nom} validé avec succès.")
     return redirect('valider_hopitaux')
 
-@user_passes_test(is_admin)
+@login_required
+@admin_required
 def rejeter_hopital(request, hopital_id):
     hopital = get_object_or_404(Hopital, id=hopital_id)
     nom = hopital.nom

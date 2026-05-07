@@ -1,0 +1,33 @@
+{% include 'core/sidebar_style.html' %}
+
+<div class="sidebar">
+    
+
+    <nav class="nav flex-column">
+        <a href="{% url 'dashboard_donneur' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard_donneur' %}active{% endif %}">
+            <i class="fas fa-grid-2"></i> Dashboard
+        </a>
+        <a href="{% url 'campagne_list' %}" class="nav-link {% if request.resolver_match.url_name == 'campagne_list' %}active{% endif %}">
+            <i class="fas fa-calendar-alt"></i> Campagnes
+        </a>
+        <a href="{% url 'mes_campagnes' %}" class="nav-link {% if request.resolver_match.url_name == 'mes_campagnes' %}active{% endif %}">
+            <i class="fas fa-bookmark"></i> Mes Inscriptions
+        </a>
+        <a href="{% url 'compatible_calls' %}" class="nav-link {% if request.resolver_match.url_name == 'compatible_calls' %}active{% endif %}">
+            <i class="fas fa-ambulance"></i> Appels Urgents
+        </a>
+        <a href="{% url 'enregistrer_don' %}" class="nav-link {% if request.resolver_match.url_name == 'enregistrer_don' %}active{% endif %}">
+            <i class="fas fa-plus-circle"></i> Enregistrer Don
+        </a>
+        <a href="{% url 'historique_dons' %}" class="nav-link {% if request.resolver_match.url_name == 'historique_dons' %}active{% endif %}">
+            <i class="fas fa-history"></i> Historique des Dons
+        </a>
+        <a href="{% url 'profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <i class="fas fa-user-circle"></i> Mon Profil
+        </a>
+        <hr>
+        <a href="{% url 'logout' %}" class="nav-link text-white-50">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+    </nav>
+</div>

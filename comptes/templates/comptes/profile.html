@@ -3,78 +3,160 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Profil | BloodConnect</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #C8102E;
+            --secondary: #FEE2E2;
+            --dark: #1E293B;
+            --accent: #FCA5A5;
+        }
+        body { background: #F8FAFC; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
+        .dashboard-content { padding: 2rem; }
+        .card-custom {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid #F1F5F9;
+        }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+        .info-box { background: #F8FAFC; border-radius: 16px; padding: 1.25rem; border: 1px solid #F1F5F9; transition: 0.3s; }
+        .info-box:hover { background: white; border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .stat-box { border-radius: 20px; padding: 1.5rem; text-align: center; }
+        .badge-blood { background: #FEE2E2; color: #C8102E; padding: 0.5rem 1.25rem; border-radius: 50px; font-weight: 800; font-size: 1.1rem; }
+        .profile-avatar { width: 120px; height: 120px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-radius: 50%; }
+    </style>
 </head>
-<body class="bg-light">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card border-0 shadow-sm rounded-4 p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="fw-bold m-0">Mon Profil</h3>
-                        <a href="{% url 'dashboard_donneur' %}" class="btn btn-sm btn-outline-dark"><i class="fas fa-arrow-left"></i> Retour</a>
-                    </div>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 p-0 d-none d-lg-block">
+                {% if request.user.is_superuser or request.user.role == 'admin' %}
+                    {% include 'core/sidebare_admin.html' %}
+                {% elif request.user.role == 'hopital' %}
+                    {% include 'demandes/sidebar_hopital.html' %}
+                {% else %}
+                    {% include 'dons/sidebar_donneur.html' %}
+                {% endif %}
+            </div>
 
-                    <div class="text-center mb-4">
-                        <div class="position-relative d-inline-block">
-                            <img src="https://ui-avatars.com/api/?name={{ user.get_full_name|default:user.username }}&size=128&rounded=true&bold=true" class="rounded-circle mb-3 shadow-sm" alt="Avatar">
-                            <a href="{% url 'profile_update' %}" class="btn btn-sm btn-light rounded-circle position-absolute bottom-0 end-0 border shadow-sm" title="Modifier">
-                                <i class="fas fa-pen text-primary"></i>
-                            </a>
-                        </div>
-                        <h4 class="fw-bold">{{ user.get_full_name|default:user.username }}</h4>
-                        <span class="badge bg-danger fs-6">{{ user.donneur.groupe_sanguin }}</span>
+            <!-- Main Content -->
+            <div class="col-lg-10 p-0">
+                <div class="glass-header d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold m-0">Mon Profil</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=C8102E&color=fff" class="rounded-circle" width="40" alt="Avatar">
                     </div>
+                </div>
 
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="card bg-light border-0 p-3">
-                                <small class="text-muted">Email</small>
-                                <p class="fw-bold m-0">{{ user.email }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card bg-light border-0 p-3">
-                                <small class="text-muted">Téléphone</small>
-                                <p class="fw-bold m-0">{{ user.donneur.telephone|default:"Non défini" }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card bg-light border-0 p-3">
-                                <small class="text-muted">Ville</small>
-                                <p class="fw-bold m-0">{{ user.donneur.ville|default:"Non défini" }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card bg-light border-0 p-3">
-                                <small class="text-muted">Dernier Don</small>
-                                <p class="fw-bold m-0">
-                                    {% if user.donneur.derniere_don %}
-                                        {{ user.donneur.derniere_don|date:"d/m/Y" }}
-                                    {% else %}
-                                        <span class="text-muted">Jamais</span>
+                <div class="dashboard-content">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-9">
+                            <div class="card-custom">
+                                <div class="text-center mb-5">
+                                    <div class="position-relative d-inline-block mb-4">
+                                        <img src="https://ui-avatars.com/api/?name={{ user.get_full_name|default:user.username }}&size=200&background=C8102E&color=fff" class="profile-avatar" alt="Avatar">
+                                        <a href="{% url 'profile_update' %}" class="btn btn-light rounded-circle position-absolute bottom-0 end-0 border shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-pen text-danger"></i>
+                                        </a>
+                                    </div>
+                                    <h2 class="fw-bold m-0">{{ user.get_full_name|default:user.username }}</h2>
+                                    <p class="text-muted mb-3">{{ user.email }}</p>
+                                    
+                                    {% if user.is_superuser or user.role == 'admin' %}
+                                        <span class="badge bg-dark rounded-pill px-4 py-2"><i class="fas fa-user-shield me-1"></i> Administrateur</span>
+                                    {% elif user.role == 'hopital' %}
+                                        <span class="badge bg-primary rounded-pill px-4 py-2">Hôpital Partenaire</span>
+                                    {% elif user.role == 'donneur' %}
+                                        <span class="badge-blood">Groupe {{ user.donneur.groupe_sanguin }}</span>
                                     {% endif %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                                </div>
 
-                    <div class="mt-4 pt-4 border-top">
-                        <h5 class="fw-bold mb-3">Statistiques</h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="card bg-success bg-opacity-10 border-0 p-3 text-center">
-                                    <h4 class="text-success fw-bold">{{ total_dons }}</h4>
-                                    <small class="text-muted">Dons effectués</small>
+                                <div class="row g-4 mb-5">
+                                    <div class="col-md-6">
+                                        <div class="info-box">
+                                            <small class="text-muted d-block mb-1"><i class="fas fa-id-badge me-1"></i> Nom d'utilisateur</small>
+                                            <span class="fw-bold fs-5">{{ user.username }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-box">
+                                            <small class="text-muted d-block mb-1"><i class="fas fa-map-marker-alt me-1"></i> Localisation / Ville</small>
+                                            <span class="fw-bold fs-5">
+                                                {% if user.is_superuser or user.role == 'admin' %}
+                                                    Accès Global (Admin)
+                                                {% elif user.role == 'hopital' %}
+                                                    {{ user.hopital.ville|default:"Non défini" }}
+                                                {% else %}
+                                                    {{ user.donneur.ville|default:"Non défini" }}
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="info-box">
+                                            <small class="text-muted d-block mb-1"><i class="fas fa-calendar-check me-1"></i> Membre depuis le</small>
+                                            <span class="fw-bold fs-5">{{ user.date_joined|date:"d F Y" }}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card bg-info bg-opacity-10 border-0 p-3 text-center">
-                                    <h4 class="text-info fw-bold">{{ total_points }}</h4>
-                                    <small class="text-muted">Points de fidélité</small>
-                                </div>
+
+                                {% if user.role == 'donneur' %}
+                                    <div class="pt-4 border-top">
+                                        <h5 class="fw-bold mb-4">Statistiques de Don</h5>
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="stat-box" style="background: #ECFDF5; border: 1px solid #D1FAE5;">
+                                                    <div class="text-success fs-1 fw-bold mb-1">{{ user.donneur.dons.count }}</div>
+                                                    <div class="text-success-emphasis fw-medium">Dons effectués</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="stat-box" style="background: #FFF7ED; border: 1px solid #FFEDD5;">
+                                                    <div class="text-warning-emphasis fs-1 fw-bold mb-1">
+                                                        {% if user.donneur.derniere_don %}
+                                                            {{ user.donneur.derniere_don|date:"d M Y" }}
+                                                        {% else %}
+                                                            Jamais
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="text-warning-emphasis fw-medium">Dernier Don</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elif user.is_superuser or user.role == 'admin' %}
+                                    <div class="pt-4 border-top">
+                                        <h5 class="fw-bold mb-4">Privilèges Administrateur</h5>
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <div class="p-3 border rounded-4 text-center">
+                                                    <i class="fas fa-users-cog fs-3 mb-2 text-primary"></i>
+                                                    <div class="small fw-bold">Gestion Utilisateurs</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="p-3 border rounded-4 text-center">
+                                                    <i class="fas fa-chart-pie fs-3 mb-2 text-primary"></i>
+                                                    <div class="small fw-bold">Rapports & Stats</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="p-3 border rounded-4 text-center">
+                                                    <i class="fas fa-shield-alt fs-3 mb-2 text-primary"></i>
+                                                    <div class="small fw-bold">Sécurité Système</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -82,5 +164,7 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

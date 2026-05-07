@@ -1,0 +1,29 @@
+{% include 'core/sidebar_style.html' %}
+
+<div class="sidebar">
+
+    <nav class="nav flex-column">
+        <a href="{% url 'table_de_bord' %}" class="nav-link {% if request.resolver_match.url_name == 'table_de_bord' %}active{% endif %}">
+            <i class="fas fa-chart-line"></i> Tableau de bord
+        </a>
+        <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+            <i class="fas fa-tachometer-alt"></i> Dashboard Admin
+        </a>
+        <a href="{% url 'Demandes_parV' ville='toutes' %}" class="nav-link {% if request.resolver_match.url_name == 'Demandes_parV' %}active{% endif %}">
+            <i class="fas fa-map-marker-alt"></i> Demandes par ville
+        </a>
+        <a href="{% url 'csv_donneurs' %}" class="nav-link {% if request.resolver_match.url_name == 'csv_donneurs' %}active{% endif %}">
+            <i class="fas fa-file-csv"></i> Export CSV
+        </a>
+        <a href="{% url 'valider_hopitaux' %}" class="nav-link {% if request.resolver_match.url_name == 'valider_hopitaux' %}active{% endif %}">
+            <i class="fas fa-hospital-user"></i> Validations
+        </a>
+        <a href="{% url 'profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <i class="fas fa-user-edit"></i> Mon Profil
+        </a>
+        <hr>
+        <a href="{% url 'logout' %}" class="nav-link text-white-50">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+    </nav>
+</div>

@@ -20,6 +20,13 @@ class CampagneForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'type': 'date'}),
         }
 
+    def clean_date(self):
+        import datetime
+        date = self.cleaned_data['date']
+        if date < datetime.date.today():
+            raise forms.ValidationError("La date de la campagne ne peut pas être dans le passé.")
+        return date
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk and self.instance.groupes_cibles:

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
-            --primary: #DC2626;
+            --primary: #C8102E;
             --secondary: #FEE2E2;
             --dark: #1E293B;
             --accent: #FCA5A5;
@@ -27,34 +27,26 @@
         .table-custom { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; }
         .table-custom th { background: #F8FAFC; border-bottom: 2px solid #E2E8F0; color: var(--dark); font-weight: 600; padding: 1rem; }
         .table-custom td { vertical-align: middle; border-bottom: 1px solid #F1F5F9; padding: 1rem; }
-        .badge-blood { background: #FEE2E2; color: #DC2626; padding: 0.35rem 0.85rem; border-radius: 50px; font-weight: 700; font-size: 0.8rem; }
-        .btn-exporter { background: linear-gradient(135deg, #DC2626 0%, #b91c1c 100%); border: none; border-radius: 12px; padding: 0.8rem 1.5rem; font-weight: 600; }
-        .btn-exporter:hover { background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%); transform: scale(1.02); }
+        .badge-blood { background: #FEE2E2; color: #C8102E; padding: 0.35rem 0.85rem; border-radius: 50px; font-weight: 700; font-size: 0.8rem; }
+        .btn-exporter { background: linear-gradient(135deg, #C8102E 0%, #a60d26 100%); border: none; border-radius: 12px; padding: 0.8rem 1.5rem; font-weight: 600; }
+        .btn-exporter:hover { background: linear-gradient(135deg, #a60d26 0%, #991b1b 100%); transform: scale(1.02); }
         .btn-retour { background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 0.6rem 1.2rem; color: #64748B; text-decoration: none; display: inline-block; }
         .btn-retour:hover { background: var(--secondary); color: var(--primary); border-color: var(--primary); }
     </style>
 </head>
 <body>
-    {% include 'navbar.html' %}
+    {% include 'header.html' %}
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-lg-2 sidebar d-none d-lg-block">
-                <div class="d-flex align-items-center gap-2 mb-5 px-3">
-                    <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-heart text-white small"></i>
-                    </div>
-                    <span class="fw-bold fs-5">BloodConnect</span>
-                </div>
-                <nav class="nav flex-column">
-                    <a href="{% url 'table_de_bord' %}" class="nav-link"><i class="fas fa-chart-line"></i> Tableau de bord</a>
-                    <a href="{% url 'admin_dashboard' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard Admin</a>
-                    <a href="/core/admin/demandes/ville/toutes/" class="nav-link"><i class="fas fa-map-marker-alt"></i> Demandes par ville</a>
-                    <a href="{% url 'csv_donneurs' %}" class="nav-link active"><i class="fas fa-file-csv"></i> Export CSV</a>
-                    <a href="{% url 'profile' %}" class="nav-link"><i class="fas fa-user-edit"></i> Mon Profil</a>
-                    <hr class="my-4 text-muted">
-                    <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
-                </nav>
+            <div class="col-lg-2 p-0 d-none d-lg-block">
+                {% if user.is_superuser or user.role == 'admin' %}
+                    {% include 'core/sidebare_admin.html' %}
+                {% elif user.role == 'hopital' %}
+                    {% include 'demandes/sidebar_hopital.html' %}
+                {% else %}
+                    {% include 'dons/sidebar_donneur.html' %}
+                {% endif %}
             </div>
 
             <!-- Main Content -->
@@ -64,7 +56,7 @@
                         <i class="fas fa-file-csv text-danger me-2"></i>
                         Export CSV - Liste des donneurs
                     </h5>
-                    <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DC2626&color=fff" class="rounded-circle" width="40" alt="Avatar">
+                    <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=C8102E&color=fff" class="rounded-circle" width="40" alt="Avatar">
                 </div>
 
                 <div class="dashboard-content">
@@ -79,7 +71,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="stat-card text-center">
-                                <div class="stat-icon mx-auto" style="background: #FEE2E2; color: #DC2626;">
+                                <div class="stat-icon mx-auto" style="background: #FEE2E2; color: #C8102E;">
                                     <i class="fas fa-file-csv"></i>
                                 </div>
                                 <h3 class="fw-bold mb-3">Export CSV des donneurs</h3>

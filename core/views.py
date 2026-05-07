@@ -6,13 +6,14 @@ from dons.models import Don
 from django.db.models import Count, Sum
 import csv
 from django.http import HttpResponse
+from datetime import date
+from .decorators import admin_required
 def index(request):
     return render(request, 'accueil.html')
 
 @login_required
+@admin_required
 def dashboard_admin(request):
-    if not request.user.is_superuser and request.user.role != 'admin':
-        return redirect('login')
     
     from django.db.models import Count
     
@@ -31,36 +32,8 @@ def dashboard_admin(request):
     }
     
     return render(request, "core/dashboard_admin.html", context)
-<<<<<<< HEAD
 
-import csv
-from django.http import HttpResponse
 
-@login_required
-def exporter_donneurs_csv(request):
-    if not request.user.is_superuser and request.user.role != 'admin':
-        return redirect('login')
-        
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="liste_donneurs.csv"'
-    
-    writer = csv.writer(response)
-    writer.writerow(['Nom', 'Prénom', 'Email', 'Groupe Sanguin', 'Ville', 'Sexe', 'Date Naissance', 'Actif'])
-    
-    donneurs = Donneur.objects.all().select_related('user')
-    for d in donneurs:
-        writer.writerow([
-            d.user.last_name,
-            d.user.first_name,
-            d.user.email,
-            d.groupe_sanguin,
-            d.ville,
-            d.sexe,
-            d.date_naissance,
-            'Oui' if d.actif else 'Non'
-        ])
-        
-    return response
 
 @login_required
 def carte_demandes(request):
@@ -79,14 +52,13 @@ def carte_demandes(request):
         })
         
     return render(request, "core/Demandes_parV.html", {'villes_data': villes_data})
-=======
+
 # views.py
 
 @login_required
+@admin_required
 def demandes_par_ville(request, ville):
     """Affiche la liste des demandes urgentes pour une ville spécifique"""
-    if not request.user.is_superuser and request.user.role != 'admin':
-        return redirect('login')
     
     ville_recherchee = ville
     
@@ -113,10 +85,9 @@ def demandes_par_ville(request, ville):
     })
 
 @login_required
+@admin_required
 def table_de_bord(request):
     """Affiche le tableau de bord avec les statistiques par groupe sanguin"""
-    if not request.user.is_superuser and request.user.role != 'admin':
-        return redirect('login')
     
     # Demandes actives par groupe sanguin
     demandes_par_groupe = DemandeUrgente.objects.filter(
@@ -166,10 +137,9 @@ def table_de_bord(request):
     
     return render(request, "core/Table_de_bord.html", context)
 @login_required
+@admin_required
 def csv_donneurs(request):
     """Affiche la page d'export CSV des donneurs (admin uniquement)"""
-    if not request.user.is_superuser and request.user.role != 'admin':
-        return redirect('login')
     
     # Récupérer tous les donneurs
     donneurs = Donneur.objects.select_related('user').all().order_by('groupe_sanguin', 'user__username')
@@ -183,10 +153,9 @@ def csv_donneurs(request):
 
 
 @login_required
+@admin_required
 def exporter_donneurs_csv(request):
     """Exporte la liste des donneurs au format CSV"""
-    if not request.user.is_superuser and request.user.role != 'admin':
-        return redirect('login')
     
     # Créer la réponse HTTP avec le type CSV
     response = HttpResponse(content_type='text/csv')
@@ -216,7 +185,6 @@ def exporter_donneurs_csv(request):
     # Ajouter les données des donneurs
     for donneur in donneurs:
         # Calculer l'âge
-        from datetime import date
         age = None
         if donneur.date_naissance:
             today = date.today()
@@ -233,10 +201,10 @@ def exporter_donneurs_csv(request):
             donneur.ville,
             'Actif' if donneur.actif else 'Inactif',
             donneur.derniere_don.strftime('%d/%m/%Y') if donneur.derniere_don else 'Aucun don',
-            donneur.prochaine_date_don if donneur.prochaine_date_don else 'Immédiatement',
+            donneur.prochaine_date_don.strftime('%d/%m/%Y') if donneur.prochaine_date_don else 'Immédiatement',
         ])
     
     return response
 
   
->>>>>>> 7172e4f0fb08499b936925eecfd3cd210c234abe
+

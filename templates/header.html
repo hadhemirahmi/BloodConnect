@@ -1,32 +1,114 @@
- {% load static %}
- <header class="header">
-        <nav class="container d-flex align-items-center justify-content-between">
-            <div class="logo d-flex align-items-center gap-2">
-                <img src="{% static 'images/BloodConnect.png' %}" alt="Logo" width="240" height="70">
-            </div>
-            
-            <div class="d-none d-lg-flex align-items-center">
-                <a href="{% url 'accueil' %}" class="nav-link">Accueil</a>
-                {% if user.is_authenticated %}
-                    {% if user.role == 'donneur' %}
-                        <a href="{% url 'dashboard_donneur' %}" class="nav-link">Mon Portail Donneur</a>
-                    {% elif user.role == 'hopital' %}
-                        <a href="{% url 'dashboard_hopital' %}" class="nav-link">Portail Hospitalier</a>
-                    {% elif user.role == 'admin' %}
-                        <a href="{% url 'admin_dashboard' %}" class="nav-link">Tableau de Bord Admin</a>
-                    {% endif %}
-                {% endif %}
-                <a href="{% url 'about' %}" class="nav-link">À Propos</a>
-            </div>
+{% load static %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
-            <div class="d-flex gap-3">
-                {% if user.is_authenticated %}
-                    <span class="navbar-text me-2 small fw-bold">Bonjour, {{ user.username }}</span>
-                    <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Déconnexion</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-primary-red">Connexion</a>
-                    <a href="{% url 'register' %}" class="btn btn-outline-dark">Inscription</a>
+    :root {
+        --primary-red: #C8102E;
+        --dark-blue: #0F172A;
+        --text-muted: #64748B;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .header {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 0.8rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        font-family: 'Outfit', sans-serif;
+    }
+
+    .header .nav-link {
+        font-weight: 500;
+        color: var(--dark-blue) !important;
+        margin: 0 1rem;
+        transition: var(--transition);
+        position: relative;
+        text-decoration: none;
+    }
+
+    .header .nav-link:hover {
+        color: var(--primary-red) !important;
+    }
+
+    .header .btn-primary-red {
+        background-color: var(--primary-red);
+        color: white !important;
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        transition: var(--transition);
+        box-shadow: 0 4px 14px rgba(200, 16, 46, 0.3);
+        text-decoration: none;
+    }
+
+    .header .btn-primary-red:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(200, 16, 46, 0.4);
+        color: white !important;
+    }
+
+    .header .btn-outline-danger {
+        border-radius: 8px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+    }
+
+    .header .navbar-text {
+        color: var(--dark-blue);
+        font-weight: 600;
+    }
+</style>
+
+<header class="header">
+    <nav class="container d-flex align-items-center justify-content-between">
+        <div class="logo d-flex align-items-center gap-2">
+            <a href="{% url 'accueil' %}">
+                <img src="{% static 'images/BloodConnect.png' %}" alt="Logo" width="200" height="60" style="object-fit: contain;">
+            </a>
+        </div>
+        
+        <div class="d-none d-lg-flex align-items-center">
+            <a href="{% url 'accueil' %}" class="nav-link">Accueil</a>
+            {% if user.is_authenticated %}
+                {% if user.is_superuser or user.role == 'admin' %}
+                    <a href="{% url 'admin_dashboard' %}" class="nav-link">Tableau de Bord Admin</a>
+                {% elif user.role == 'hopital' %}
+                    <a href="{% url 'dashboard_hopital' %}" class="nav-link">Portail Hospitalier</a>
+                {% elif user.role == 'donneur' %}
+                    <a href="{% url 'dashboard_donneur' %}" class="nav-link">Mon Portail Donneur</a>
                 {% endif %}
+            {% endif %}
+            <a href="{% url 'about' %}" class="nav-link">À Propos</a>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            {% if user.is_authenticated %}
+                <span class="navbar-text d-none d-md-inline-block">Bonjour, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Déconnexion</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary-red">Connexion</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-dark px-3 py-2 rounded-3 fw-bold" style="text-decoration: none;">Inscription</a>
+            {% endif %}
+        </div>
+    </nav>
+</header>
+
+<!-- Affichage des messages Flash (Erreurs, Succès, etc.) -->
+{% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm border-0 rounded-3" role="alert" style="z-index: 1050; position: relative;">
+                <div class="d-flex align-items-center">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+                    <div>{{ message }}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        </nav>
-    </header>
+        {% endfor %}
+    </div>
+{% endif %}

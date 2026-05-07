@@ -5,11 +5,11 @@ from .models import Don
 from .forms import DonForm
 from demandes.models import DemandeUrgente, ReponseAppel
 from core.utils import get_compatible_groups, is_compatible
+from core.decorators import donor_required
 
 @login_required
+@donor_required
 def enregistrer_don(request):
-    if request.user.role != 'donneur':
-        return redirect('index')
         
     donneur = request.user.donneur
     if not donneur.est_eligible():
@@ -34,9 +34,8 @@ def enregistrer_don(request):
     return render(request, 'dons/enregistrer_don.html', {'form': form})
 
 @login_required
+@donor_required
 def repondre_appel(request, pk):
-    if request.user.role != 'donneur':
-        return redirect('index')
         
     donneur = request.user.donneur
     if not donneur.est_eligible():
@@ -60,9 +59,8 @@ def repondre_appel(request, pk):
     return redirect('dashboard_donneur')
 
 @login_required
+@donor_required
 def liste_appels_compatibles(request):
-    if request.user.role != 'donneur':
-        return redirect('index')
     
     donneur = request.user.donneur
     target_groups = get_compatible_groups(donneur.groupe_sanguin)
@@ -73,3 +71,10 @@ def liste_appels_compatibles(request):
     ).order_by('-delai')
     
     return render(request, 'dons/liste_appels.html', {'appels': appels})
+
+@login_required
+@donor_required
+def historique_dons(request):
+    
+    dons = Don.objects.filter(donneur=request.user.donneur).order_by('-date_don')
+    return render(request, 'dons/historique_dons.html', {'dons': dons})
