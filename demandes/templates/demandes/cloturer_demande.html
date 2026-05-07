@@ -1,21 +1,257 @@
-{% extends 'base_hopital.html' %}
-
-{% block title %}Clôturer Demande{% endblock %}
-
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card-custom text-center">
-            <h4 class="fw-bold mb-4">Confirmer la clôture</h4>
-            <p>Êtes-vous sûr de vouloir clôturer cette demande urgente ? Cette action est irréversible.</p>
-            <form method="post">
-                {% csrf_token %}
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-danger py-2 fw-bold">Oui, clôturer la demande</button>
-                    <a href="{% url 'historique_demandes' %}" class="btn btn-outline-secondary">Annuler</a>
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clôturer Demande | BloodConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #DC2626;
+            --secondary: #FEE2E2;
+            --dark: #1E293B;
+            --accent: #FCA5A5;
+        }
+        body { background: #F8FAFC; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
+        
+        /* Sidebar Styles */
+        .sidebar { background: white; border-right: 1px solid #E2E8F0; min-height: 100vh; padding: 2rem 1rem; }
+        
+        .nav-link {
+            color: #64748B;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link i {
+            width: 22px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin-right: 0.8rem;
+        }
+        
+        .nav-link:hover {
+            background: var(--secondary);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .nav-link:hover i {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+        
+        .nav-link.active {
+            background: var(--secondary);
+            color: var(--primary);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+        }
+        
+        .nav-link.active i {
+            color: var(--primary);
+        }
+        
+        .nav-link.text-danger:hover {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        
+        hr {
+            margin: 0.5rem 0;
+            border-color: #E2E8F0;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--primary);
+            border-radius: 0 3px 3px 0;
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            transform: scaleY(1);
+        }
+        
+        /* Main Content Styles */
+        .dashboard-content { padding: 2rem; }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+        
+        /* Card Styles */
+        .card-custom {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid #F1F5F9;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        }
+        
+        /* Icon Circle */
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            background: #FEE2E2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+        }
+        .icon-circle i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+        
+        /* Button Styles */
+        .btn-danger {
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            padding: 0.8rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-danger:hover {
+            background: #b91c1c;
+            transform: scale(1.02);
+        }
+        .btn-outline-secondary {
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            color: #64748B;
+            padding: 0.8rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .btn-outline-secondary:hover {
+            background: var(--secondary);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        /* Alert/Warning Box */
+        .warning-box {
+            background: #FEF3C7;
+            border-left: 4px solid #D97706;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 sidebar d-none d-lg-block">
+                <div class="d-flex align-items-center gap-2 mb-5 px-3">
+                    <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-heart text-white small"></i>
+                    </div>
+                    <span class="fw-bold fs-5">BloodConnect</span>
                 </div>
-            </form>
+                <nav class="nav flex-column gap-2">
+                    <a href="{% url 'dashboard_hopital' %}" class="nav-link">
+                        <i class="fas fa-chart-line me-2"></i> Tableau de bord
+                    </a>
+                    <a href="{% url 'historique_demandes' %}" class="nav-link active">
+                        <i class="fas fa-list-ul me-2"></i> Mes Demandes
+                    </a>
+                    <a href="{% url 'ajouter_demande' %}" class="nav-link">
+                        <i class="fas fa-plus-circle me-2"></i> Nouvelle Urgence
+                    </a>
+                    <a href="{% url 'creer_campagne' %}" class="nav-link">
+                        <i class="fas fa-bullhorn me-2"></i> Créer Campagne
+                    </a>
+                    <a href="{% url 'mes_campagnes' %}" class="nav-link">
+                        <i class="fas fa-calendar-alt me-2"></i> Mes Campagnes
+                    </a>
+                    <a href="{% url 'profile_update' %}" class="nav-link">
+                        <i class="fas fa-building me-2"></i> Infos Hôpital
+                    </a>
+                    <hr class="my-3 border-secondary opacity-25">
+                    <a href="{% url 'logout' %}" class="nav-link text-danger">
+                        <i class="fas fa-power-off me-2"></i> Déconnexion
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-10 p-0">
+                <div class="glass-header d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold m-0">
+                        <i class="fas fa-check-circle text-danger me-2"></i>
+                        Clôturer une Demande
+                    </h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DC2626&color=fff" class="rounded-circle" width="40" alt="Avatar">
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <!-- Avertissement -->
+                            <div class="warning-box">
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                <strong>Attention :</strong> Cette action est irréversible. Une fois la demande clôturée, les donneurs ne pourront plus y répondre.
+                            </div>
+
+                            <div class="card-custom">
+                                <div class="icon-circle">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                
+                                <h4 class="fw-bold mb-3">Confirmer la clôture</h4>
+                                <p class="text-muted mb-4">
+                                    Êtes-vous sûr de vouloir clôturer cette demande urgente ?<br>
+                                    Cette action est <strong class="text-danger">irréversible</strong> et la demande ne sera plus visible par les donneurs.
+                                </p>
+                                
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="d-grid gap-2 mt-4">
+                                        <button type="submit" class="btn btn-danger py-2 fw-bold">
+                                            <i class="fas fa-check-circle me-2"></i> Oui, clôturer la demande
+                                        </button>
+                                        <a href="{% url 'historique_demandes' %}" class="btn btn-outline-secondary text-center">
+                                            <i class="fas fa-arrow-left me-2"></i> Annuler et retourner à l'historique
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -20,13 +20,16 @@
         .nav-link:hover, .nav-link.active { background: var(--secondary); color: var(--primary); }
         .nav-link i { margin-right: 0.8rem; }
         .dashboard-content { padding: 2rem; }
-        .stat-card { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; }
+        .stat-card { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #F1F5F9; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
         .stat-icon { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem; }
         .badge-eligibility { background: #DCFCE7; color: #166534; padding: 0.5rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
         .badge-waiting { background: #FEF9C3; color: #854D0E; padding: 0.5rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
         .urgent-call { background: white; border-left: 4px solid var(--primary); border-radius: 15px; margin-bottom: 1rem; transition: 0.3s; }
         .urgent-call:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); sticky-top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; }
+        .btn-retour { background: white; border: 1px solid #E2E8F0; color: #64748B; border-radius: 12px; padding: 0.6rem 1.2rem; transition: 0.3s; text-decoration: none; display: inline-block; }
+        .btn-retour:hover { background: var(--secondary); color: var(--primary); border-color: var(--primary); }
     </style>
 </head>
 <body>
@@ -42,20 +45,21 @@
                     <span class="fw-bold fs-5">BloodConnect</span>
                 </div>
                 <nav class="nav flex-column">
-                   
-                    <!-- <a href="{% url 'mes_campagnes' %}" class="nav-link"><i class="fas fa-calendar-alt"></i> Mes Campagnes</a> -->
-                   <!-- <a href="{% url 'enregistrer_don' %}" class="nav-link"><i class="fas fa-plus-circle"></i> Enregistrer Don</a> -->
-                    <a href="{% url 'profile' %}" class="nav-link"><i class="fas fa-user-edit"></i> Mon Profil</a> 
-                     <hr class="my-4 text-muted"> 
+                    <a href="{% url 'table_de_bord' %}" class="nav-link"><i class="fas fa-chart-line"></i> Tableau de bord</a>
+                    <a href="{% url 'admin_dashboard' %}" class="nav-link active"><i class="fas fa-tachometer-alt"></i> Dashboard Admin</a>
+                    <a href="{% url 'Demandes_parV' ville='toutes' %}" class="nav-link"><i class="fas fa-map-marker-alt"></i> Demandes par ville</a>
+                    <a href="{% url 'csv_donneurs' %}" class="nav-link"><i class="fas fa-file-csv"></i> Export CSV</a>
+                    <a href="{% url 'profile' %}" class="nav-link"><i class="fas fa-user-edit"></i> Mon Profil</a>
+                    <hr class="my-4 text-muted">
                     <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
                 </nav>
             </div>
-                        <!-- Main Content -->
+
+            <!-- Main Content -->
             <div class="col-lg-10 p-0">
                 <div class="glass-header d-flex justify-content-between align-items-center">
                     <h5 class="fw-bold m-0">Bienvenue, {{ request.user.username }} !</h5>
                     <div class="d-flex align-items-center gap-3">
-                        
                         <div class="dropdown">
                             <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DC2626&color=fff" class="rounded-circle" width="40" alt="Avatar">
                         </div>
@@ -72,66 +76,67 @@
                         {% endfor %}
                     {% endif %}
                     
-<div class="row g-4 mb-5">
+                    <div class="row g-4 mb-5">
+                        <!-- DASHBOARD ADMIN -->
+                        <div class="col-md-4">
+                            <a href="{% url 'table_de_bord' %}" class="text-decoration-none">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background: #FEE2E2; color: #DC2626;">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <span class="text-muted small fw-medium">Tableau de bord</span>
+                                    <h4 class="fw-bold mt-1">Admin</h4>
+                                    <p class="text-muted small mb-0">Gestion globale de la plateforme</p>
+                                </div>
+                            </a>
+                        </div>
 
-    <!-- DASHBOARD ADMIN -->
-    <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: #FEE2E2; color: #DC2626;">
-                <i class="fas fa-chart-line"></i>
+                        <!-- VALIDATION HOPITAUX -->
+                        <div class="col-md-4">
+                            <a href="{% url 'valider_hopitaux' %}" class="text-decoration-none">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background: #FEF3C7; color: #D97706;">
+                                        <i class="fas fa-hospital-user"></i>
+                                    </div>
+                                    <span class="text-muted small fw-medium">Validations</span>
+                                    <h3 class="fw-bold mt-1">{{ total_hopitaux_en_attente }}</h3>
+                                    <p class="text-muted small mb-0">Comptes hospitaliers en attente</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- DEMANDES PAR VILLE -->
+                        <div class="col-md-4">
+                            <a href="{% url 'Demandes_parV' ville='toutes' %}" class="text-decoration-none">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background: #E0F2FE; color: #0369A1;">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <span class="text-muted small fw-medium">Demandes urgentes</span>
+                                    <h3 class="fw-bold mt-1">{{ total_demandes_actives }}</h3>
+                                    <p class="text-muted small mb-0">Répartition par ville</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- EXPORT CSV -->
+                        <div class="col-md-4">
+                            <a href="{% url 'csv_donneurs' %}" class="text-decoration-none">
+                                <div class="stat-card text-center">
+                                    <div class="stat-icon mx-auto" style="background: #E0F2FE; color: #0369A1;">
+                                        <i class="fas fa-file-csv"></i>
+                                    </div>
+                                    <span class="text-muted small fw-medium">Export Donneurs</span>
+                                    <h5 class="fw-bold mt-2">CSV</h5>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <span class="text-muted small fw-medium">Tableau de bord</span>
-            <h4 class="fw-bold mt-1">Admin</h4>
-            <p class="text-muted small mb-0">Gestion globale de la plateforme</p>
         </div>
     </div>
-
-    <!-- VALIDATION HOPITAUX -->
-<div class="col-md-4">
-    <a href="{% url 'valider_hopitaux' %}" class="text-decoration-none">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: #FEF3C7; color: #D97706;">
-                <i class="fas fa-hospital-user"></i>
-            </div>
-            <span class="text-muted small fw-medium">Validations</span>
-            <h3 class="fw-bold mt-1">{{ total_hopitaux_en_attente }}</h3>
-            <p class="text-muted small mb-0">Comptes hospitaliers en attente</p>
-        </div>
-    </a>
-</div>
-
-    <!-- DEMANDES PAR VILLE -->
-    <div class="col-md-4">
-        <a href="{% url 'Demandes_parV' ville='toutes' %}" class="text-decoration-none">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: #E0F2FE; color: #0369A1;">
-                <i class="fas fa-map-marker-alt"></i>
-            </div>
-            <span class="text-muted small fw-medium">Demandes urgentes</span>
-            <h3 class="fw-bold mt-1">{{ total_demandes_actives }}</h3>
-            <p class="text-muted small mb-0">Répartition par ville</p>
-        </div>
-        </a>
-        
-    </div>
-<div class="col-md-3">
-    <div class="stat-card text-center">
-
-        <!-- ICON -->
-        <div class="stat-icon mx-auto" style="background: #E0F2FE; color: #0369A1;">
-            <i class="fas fa-file-csv"></i>
-        </div>
-
-        <!-- TITLE -->
-        <span class="text-muted small fw-medium">Export Donneurs</span>
-
-        <!-- ACTION -->
-        <h5 class="fw-bold mt-2">CSV</h5>
-
-
-    </div>
-</div>
-</div>
-</div>
 </body>
-
+</html>
