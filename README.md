@@ -98,5 +98,3 @@ Si vous souhaitez exécuter ce projet sur votre propre machine, suivez ces étap
 
 ## Contribution
 Toute contribution est la bienvenue. Pour toute suggestion, n'hésitez pas à ouvrir une *Issue* ou à proposer une *Pull Request*.
-
-**Auteur :** Hadhemi Rahmi
