@@ -5,9 +5,18 @@ from demandes.models import DemandeUrgente
 from dons.models import Don
 from django.db.models import Count, Sum
 import csv
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from datetime import date
 from .decorators import admin_required
+import json
+import google.generativeai as genai
+from decouple import config
+
+# Configuration de Gemini
+try:
+    genai.configure(api_key=config('GEMINI_API_KEY'))
+except Exception as e:
+    print("Erreur de configuration Gemini:", e)
 def index(request):
     return render(request, 'accueil.html')
 
@@ -206,5 +215,33 @@ def exporter_donneurs_csv(request):
     
     return response
 
-  
-
+def chatbot_api(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            message = data.get('message', '')
+            
+            if not message:
+                return JsonResponse({'error': 'Message vide'}, status=400)
+                
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            
+            # Prompt contextuel
+            prompt = (
+                "Tu es le Dr. BloodConnect, un assistant médical aimable et expert pour la plateforme de don de sang BloodConnect. "
+                "Tu dois répondre aux questions concernant l'éligibilité au don de sang, les délais après certains événements "
+                "(tatouages, vaccins, soins dentaires, voyages), et le processus de don. "
+                "Si la question n'est pas liée à la santé ou au don de sang, redirige poliment la conversation vers ce sujet. "
+                "Réponds en français, de manière claire et concise.\n\n"
+                f"Question de l'utilisateur : {message}"
+            )
+            
+            response = model.generate_content(prompt)
+            
+            return JsonResponse({'response': response.text})
+            
+        except Exception as e:
+            print("Erreur Gemini:", e)
+            return JsonResponse({'error': 'Désolé, je rencontre des difficultés techniques pour vous répondre en ce moment.'}, status=500)
+            
+    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)

@@ -1,0 +1,126 @@
+<style>
+    /* Chatbot Styles */
+    .chatbot-toggler { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: #C8102E; color: white; border: none; font-size: 1.5rem; box-shadow: 0 5px 15px rgba(200, 16, 46, 0.4); cursor: pointer; z-index: 1000; transition: transform 0.3s ease; }
+    .chatbot-toggler:hover { transform: scale(1.1); }
+    .chatbot-container { position: fixed; bottom: 100px; right: 30px; width: 350px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; z-index: 1000; border: 1px solid #e0e0e0; }
+    .chatbot-header { background: #C8102E; color: white; padding: 15px; font-weight: bold; }
+    .chatbot-messages { padding: 15px; height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9; }
+    .message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; }
+    .message.bot { background: #E0F2FE; color: #0369A1; align-self: flex-start; border-bottom-left-radius: 0; }
+    .message.user { background: #C8102E; color: white; align-self: flex-end; border-bottom-right-radius: 0; }
+    .chatbot-input { display: flex; padding: 10px; background: white; border-top: 1px solid #eee; }
+    .chatbot-input input { flex: 1; border: 1px solid #ccc; border-radius: 20px; padding: 8px 15px; outline: none; }
+    .chatbot-input button { background: #C8102E; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; margin-left: 10px; cursor: pointer; }
+</style>
+
+<!-- Chatbot Assistant -->
+<button class="chatbot-toggler" onclick="toggleChat()">
+    <i class="fas fa-comment-medical"></i>
+</button>
+
+<div class="chatbot-container" id="chatbot">
+    <div class="chatbot-header d-flex justify-content-between align-items-center">
+        <div>
+            <i class="fas fa-robot me-2"></i><strong>Dr. BloodConnect</strong>
+        </div>
+        <button class="btn-close btn-close-white" onclick="toggleChat()"></button>
+    </div>
+    <div class="chatbot-messages" id="chat-messages">
+        <div class="message bot">
+            Bonjour ! Je suis l'assistant BloodConnect. Posez-moi une question sur l'éligibilité au don (ex: "diabète", "tatouage", "antibiotiques", "dentiste").
+        </div>
+    </div>
+    <div class="chatbot-input">
+        <input type="text" id="chat-input" placeholder="Posez votre question..." onkeypress="handleEnter(event)">
+        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<script>
+    function toggleChat() {
+        const chat = document.getElementById('chatbot');
+        chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    // Fonction pour récupérer le token CSRF de Django
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+        if (!message) return;
+
+        // Afficher le message de l'utilisateur
+        addMessage(message, 'user');
+        input.value = '';
+
+        // Afficher l'indicateur de chargement
+        const loadingId = 'loading-' + Date.now();
+        addMessage('<i class="fas fa-spinner fa-spin"></i> Réflexion en cours...', 'bot', loadingId, true);
+
+        try {
+            const response = await fetch('/core/chatbot-api/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            
+            // Retirer l'indicateur de chargement
+            const loadingElement = document.getElementById(loadingId);
+            if (loadingElement) loadingElement.remove();
+
+            if (response.ok && data.response) {
+                // Formater la réponse (retour à la ligne, gras)
+                let formattedResponse = data.response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                formattedResponse = formattedResponse.replace(/\n/g, '<br>');
+                addMessage(formattedResponse, 'bot', null, true);
+            } else {
+                addMessage(data.error || "Désolé, une erreur s'est produite.", 'bot');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            const loadingElement = document.getElementById(loadingId);
+            if (loadingElement) loadingElement.remove();
+            
+            addMessage("Erreur de connexion avec l'assistant. Veuillez réessayer.", 'bot');
+        }
+    }
+
+    function addMessage(text, sender, id = null, isHtml = false) {
+        const messagesContainer = document.getElementById('chat-messages');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender}`;
+        if (id) msgDiv.id = id;
+        
+        if (isHtml) {
+            msgDiv.innerHTML = text;
+        } else {
+            msgDiv.innerText = text;
+        }
+        
+        messagesContainer.appendChild(msgDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function handleEnter(e) {
+        if (e.key === 'Enter') sendMessage();
+    }
+</script>

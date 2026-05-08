@@ -9,7 +9,7 @@ urlpatterns = [
     path('carte-demandes/', views.carte_demandes, name='carte_demandes'),
     path('admin/demandes/ville/<str:ville>/', views.demandes_par_ville, name='Demandes_parV'),
     path('table-de-bord/', views.table_de_bord, name='table_de_bord'),
-
+    path('chatbot-api/', views.chatbot_api, name='chatbot_api'),
 ]
 
 
