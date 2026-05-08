@@ -15,6 +15,11 @@ DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
 
+# CSRF trusted origins (required for Django 4+ with HTTPS)
+CSRF_TRUSTED_ORIGINS = [
+    'https://hadhemi.pythonanywhere.com',
+]
+
 
 # =========================
 # APPLICATIONS
@@ -133,7 +138,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # WhiteNoise storage optimization
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
