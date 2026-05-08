@@ -154,7 +154,7 @@ def valider_presence(request, inscription_id):
     inscription.present = True
     inscription.save()
     
-    # Mettre à jour la date du dernier don du donneur
+   
     donneur = inscription.donneur
     donneur.derniere_don = inscription.campagne.date
     donneur.save()
