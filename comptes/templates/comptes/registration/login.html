@@ -5,80 +5,254 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion — BloodConnect</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    body { background: #F9F5F4; font-family: 'Segoe UI', sans-serif; }
-    .card { border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-    .btn-danger { background: #C8102E; border-color: #C8102E; transition: 0.3s; }
-    .btn-danger:hover { background: #A60D26; transform: translateY(-1px); }
-    .form-control:focus { border-color: #C8102E; box-shadow: 0 0 0 3px rgba(220,38,38,0.1); }
-    .logo-icon { width: 44px; height: 44px; background: #C8102E; border-radius: 12px;
-                 display: flex; align-items: center; justify-content: center; }
+    :root {
+      --primary-red: #E31B23;
+      --secondary-red: #C8102E;
+      --dark-red: #8B0000;
+      --glass-bg: rgba(255, 255, 255, 0.9);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    body {
+      background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+      background-attachment: fixed;
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Background Animation */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(227, 27, 35, 0.05) 0%, transparent 70%);
+      z-index: -1;
+      animation: drift 20s linear infinite;
+    }
+
+    @keyframes drift {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .auth-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 440px;
+      padding: 3rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-container {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .logo-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--primary-red);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 16px rgba(227, 27, 35, 0.2);
+      margin-bottom: 1rem;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    h1 {
+      font-weight: 700;
+      color: #1a1a1a;
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #444;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e0e0e0;
+      background: #f8f9fa;
+      transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-red);
+      box-shadow: 0 0 0 4px rgba(227, 27, 35, 0.1);
+      background: #fff;
+    }
+
+    .btn-submit {
+      background: var(--primary-red);
+      border: none;
+      border-radius: 12px;
+      padding: 0.85rem;
+      font-weight: 600;
+      color: white;
+      transition: all 0.3s ease;
+      margin-top: 1.5rem;
+      width: 100%;
+    }
+
+    .btn-submit:hover {
+      background: var(--secondary-red);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(227, 27, 35, 0.3);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      margin: 2rem 0;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: #ccc;
+    }
+
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #eee;
+    }
+
+    .divider span {
+      padding: 0 1rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .register-link {
+      text-decoration: none;
+      color: var(--primary-red);
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .register-link:hover {
+      color: var(--dark-red);
+    }
+
+    .alert {
+      border-radius: 12px;
+      font-size: 0.9rem;
+      border: none;
+    }
+
+    .forgot-password {
+      font-size: 0.8rem;
+      color: var(--primary-red);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-<div class="min-vh-100 d-flex align-items-center justify-content-center">
-  <div class="card p-4 p-md-5" style="width:100%; max-width:420px;">
 
-    <div class="text-center mb-4">
-      <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+  {% include 'header.html' %}
+
+  <main class="main-content">
+    <div class="auth-card">
+      <div class="logo-container">
         <div class="logo-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-            <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402
-                     0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501
-                     5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447
-                     2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136
-                     8.625-11 14.402z"/>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
           </svg>
         </div>
-        <span class="fw-bold fs-4">Blood<span style="color:#C8102E">Connect</span></span>
+        <h1>Bon retour !</h1>
+        <p class="subtitle">Connectez-vous à votre espace BloodConnect</p>
       </div>
-      <h1 class="h5 fw-semibold mb-1">Bon retour !</h1>
-      <p class="text-muted small">Connectez-vous à votre espace personnel</p>
-    </div>
 
- 
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show py-2 small">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      {% if error %}
+        <div class="alert alert-danger text-center mb-3">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">NOM D'UTILISATEUR</label>
+          <input type="text" name="username" class="form-control" placeholder="Entrez votre identifiant" required>
         </div>
-      {% endfor %}
-    {% endif %}
 
-    {% if error %}
-      <div class="alert alert-danger py-2 small fw-semibold text-center">{{ error }}</div>
-    {% endif %}
-
-    <form method="POST">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label fw-semibold small">Nom d'utilisateur</label>
-        <input type="text" name="username" class="form-control py-2" placeholder="Votre identifiant" required>
-      </div>
-
-      <div class="mb-3">
-        <div class="d-flex justify-content-between align-items-center">
-          <label class="form-label fw-semibold small">Mot de passe</label>
-          <a href="{% url 'password_reset' %}" class="small text-danger text-decoration-none fw-semibold" style="font-size: 0.75rem;">Oublié ?</a>
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="form-label">MOT DE PASSE</label>
+            <a href="{% url 'password_reset' %}" class="forgot-password">Oublié ?</a>
+          </div>
+          <input type="password" name="password" class="form-control" placeholder="••••••••" required>
         </div>
-        <input type="password" name="password" class="form-control py-2" placeholder="••••••••" required>
+
+        <button type="submit" class="btn-submit">
+          Se connecter
+        </button>
+      </form>
+
+      <div class="divider">
+        <span>OU</span>
       </div>
 
-      <button type="submit" class="btn btn-danger w-100 fw-semibold py-2 rounded-3 mt-3">
-        Se connecter
-      </button>
-    </form>
-
-    <div class="text-center mt-4">
-      <p class="small text-muted mb-2">Pas encore de compte ?</p>
-      <a href="{% url 'register' %}" class="btn btn-outline-dark btn-sm w-100 rounded-pill py-2">
-        Créer un compte
-      </a>
+      <div class="text-center">
+        <p class="small text-muted">Pas encore de compte ?</p>
+        <a href="{% url 'register' %}" class="btn btn-outline-dark w-100 rounded-3 py-2 fw-semibold">
+          Créer un compte
+        </a>
+      </div>
     </div>
+  </main>
 
-  </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
