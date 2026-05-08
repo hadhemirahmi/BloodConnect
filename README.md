@@ -1,4 +1,4 @@
-# 🩸 BloodConnect
+# BloodConnect
 
 Bienvenue sur **BloodConnect**, une plateforme moderne et intelligente de gestion des dons de sang développée avec Django. 
 
@@ -6,7 +6,7 @@ La mission de BloodConnect est de faciliter la mise en relation entre les donneu
 
 ---
 
-## 🚀 Fonctionnalités Principales
+## Fonctionnalités Principales
 
 - **Gestion des Utilisateurs** : Inscription et authentification sécurisées pour deux types de profils : *Donneurs* et *Hôpitaux*.
 - **Tableaux de bord (Dashboards)** : Espaces dédiés et personnalisés (Donneur, Hôpital, Administrateur).
@@ -16,7 +16,7 @@ La mission de BloodConnect est de faciliter la mise en relation entre les donneu
 
 ---
 
-## 📸 Aperçu de l'Application
+## Aperçu de l'Application
 
 *(Ajoutez vos captures d'écran dans le dossier `screenshots/` pour qu'elles s'affichent automatiquement ici !)*
 
@@ -42,7 +42,7 @@ La mission de BloodConnect est de faciliter la mise en relation entre les donneu
 
 ---
 
-## 🛠️ Technologies Utilisées
+##  Technologies Utilisées
 
 - **Backend** : Python 3.13, Django 5.x
 - **Frontend** : HTML5, CSS3 (Glassmorphism design), JavaScript, Bootstrap 5, FontAwesome
@@ -52,7 +52,7 @@ La mission de BloodConnect est de faciliter la mise en relation entre les donneu
 
 ---
 
-## 💻 Installation en local
+## Installation en local
 
 Si vous souhaitez exécuter ce projet sur votre propre machine, suivez ces étapes :
 
@@ -96,7 +96,7 @@ Si vous souhaitez exécuter ce projet sur votre propre machine, suivez ces étap
 
 ---
 
-## 🤝 Contribution
+## Contribution
 Toute contribution est la bienvenue. Pour toute suggestion, n'hésitez pas à ouvrir une *Issue* ou à proposer une *Pull Request*.
 
 **Auteur :** Hadhemi Rahmi
