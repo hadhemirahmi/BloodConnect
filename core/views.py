@@ -224,7 +224,7 @@ def chatbot_api(request):
             if not message:
                 return JsonResponse({'error': 'Message vide'}, status=400)
                 
-            model = genai.GenerativeModel('gemini-2.0-flash')
+            model = genai.GenerativeModel('gemini-flash-latest')
             
             # Prompt contextuel
             prompt = (
