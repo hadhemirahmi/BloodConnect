@@ -40,10 +40,18 @@ class DemandeUpdateView(LoginRequiredMixin, HospitalRoleMixin, UpdateView):
     template_name = 'demandes/modifier_demande.html'
     success_url = reverse_lazy('historique_demandes')
 
-class DemandeDeleteView(LoginRequiredMixin, HospitalRoleMixin, DeleteView):
+class DemandeCloturerView(LoginRequiredMixin, HospitalRoleMixin, UpdateView):
     model = DemandeUrgente
+    fields = []  # No fields to edit via form
     template_name = 'demandes/cloturer_demande.html'
     success_url = reverse_lazy('historique_demandes')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.statut = 'cloturee'
+        self.object.save()
+        messages.success(self.request, "La demande a été clôturée avec succès.")
+        return redirect(self.get_success_url())
 
 class DemandeDetailView(LoginRequiredMixin, HospitalRoleMixin, DetailView):
     model = DemandeUrgente
